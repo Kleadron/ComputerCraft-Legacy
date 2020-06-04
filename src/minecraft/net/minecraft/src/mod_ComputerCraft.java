@@ -68,22 +68,23 @@ public class mod_ComputerCraft extends BaseModMp {
         ModLoader.RegisterBlock((Block)computer);
         ModLoader.AddName((Object)((Object)computer), (String)"Computer");
         ModLoader.AddRecipe((ItemStack)new ItemStack((Block)computer, 1), (Object[])new Object[]{"XXX", "XYX", "XZX", Character.valueOf('X'), Block.stone, Character.valueOf('Y'), Item.redstone, Character.valueOf('Z'), Block.glass});
-        ModLoader.AddRecipe((ItemStack)new ItemStack((Block)computer, 1), (Object[])new Object[]{"X", 'X', Block.dirt});
         ModLoader.RegisterTileEntity((Class)RedPowerInterop.getComputerClass(), (String)"computer");
         diskDrive = new BlockDiskDrive(diskDriveBlockID);
         diskDrive.setHardness(1.0f).setBlockName("diskdrive"); //.setRequiresSelfNotify();
         ModLoader.RegisterBlock((Block)diskDrive);
         ModLoader.AddName((Object)((Object)diskDrive), (String)"Disk Drive");
         ModLoader.AddRecipe((ItemStack)new ItemStack((Block)diskDrive, 1), (Object[])new Object[]{"XXX", "XYX", "XYX", Character.valueOf('X'), Block.stone, Character.valueOf('Y'), Item.redstone});
-        ModLoader.AddRecipe((ItemStack)new ItemStack((Block)diskDrive, 1), (Object[])new Object[]{"XX", 'X', Block.dirt});
         ModLoader.RegisterTileEntity(TileEntityDiskDrive.class, (String)"diskdrive");
         disk = new ItemDisk(diskItemID);
         disk.setItemName("disk");
         ModLoader.AddName((Object)((Object)disk), (String)"Floppy Disk");
         ModLoader.AddRecipe((ItemStack)new ItemStack((Item)disk, 1), (Object[])new Object[]{"X", "Y", Character.valueOf('X'), Item.redstone, Character.valueOf('Y'), Item.paper});
-        ModLoader.AddRecipe((ItemStack)new ItemStack((Item)disk, 1), (Object[])new Object[]{"XX", "X ", 'X', Block.dirt});
         
+        //testing recipes
+        ModLoader.AddRecipe((ItemStack)new ItemStack((Item)disk, 1), (Object[])new Object[]{"XX", "X ", 'X', Block.dirt});
         ModLoader.AddRecipe((ItemStack)new ItemStack(Item.recordCat, 1), (Object[])new Object[]{"X", "X", 'X', Block.dirt});
+        ModLoader.AddRecipe((ItemStack)new ItemStack((Block)diskDrive, 1), (Object[])new Object[]{"XX", 'X', Block.dirt});
+        ModLoader.AddRecipe((ItemStack)new ItemStack((Block)computer, 1), (Object[])new Object[]{"X", 'X', Block.dirt});
 
         ModLoaderMp.RegisterGUI((BaseModMp)this, (int)diskDriveGUIID);
         m_tickCount = 0;
@@ -120,7 +121,7 @@ public class mod_ComputerCraft extends BaseModMp {
 	}
 	
 	public boolean OnTickInGame(Minecraft game) {
-	    //ItemDisk.loadLabelsIfWorldChanged(game.f);
+	    ItemDisk.loadLabelsIfWorldChanged(game.theWorld);
 	    m_tickCount++;
 	    return true;
 	  }

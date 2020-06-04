@@ -134,7 +134,7 @@ IComputerCraftEntity
         }
         if (this.diskStack != null) {
             ItemStack disks = this.diskStack;
-            //this.(0, null);
+            this.setInventorySlotContents(0, null);
             int xOff = 0;
             int zOff = 0;
             if (!destroyed) {

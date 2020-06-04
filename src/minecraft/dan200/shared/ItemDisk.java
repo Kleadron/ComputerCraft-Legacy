@@ -50,7 +50,7 @@ extends Item
     }
 
     public static int getDiskID(ItemStack itemstack, World world) {
-        if (itemstack.itemID == 106) {
+        if (itemstack.itemID == mod_ComputerCraft.disk.shiftedIndex) {
             int damage = itemstack.getItemDamage();
             if (damage == 0 && world != null) {
                 damage = ItemDisk.getNewDiskID(world);
@@ -251,8 +251,8 @@ block12:            {
                         }, null
                         );
                     }
-                    //Packet230ModLoader packet = ItemDisk.buildDiskLabelPacket(diskID, label);
-                    //mod_KMachines.sendToAllPlayers(packet);
+                    Packet230ModLoader packet = ItemDisk.buildDiskLabelPacket(diskID, label);
+                    mod_ComputerCraft.sendToAllPlayers(packet);
                 }
             }
         }
@@ -263,7 +263,8 @@ block12:            {
         return ItemDisk.getDiskLabel(diskID);
     }
 
-    public void a(ItemStack itemstack, List list) {
+    //possible dead method, no addInformation in this version of mc
+    public void addInformation(ItemStack itemstack, List list) {
         String label = ItemDisk.getDiskLabel(itemstack, null);
         if (label != null && label.length() > 0) {
             list.add(label);
@@ -273,8 +274,8 @@ block12:            {
     public static void sendDiskLabelToPlayer(EntityPlayer player, int diskID) {
         String label = ItemDisk.getDiskLabel(diskID);
         if (label != null) {
-            //Packet230ModLoader packet = ItemDisk.buildDiskLabelPacket(diskID, label);
-            //mod_KMachines.sendToPlayer(player, packet);
+            Packet230ModLoader packet = ItemDisk.buildDiskLabelPacket(diskID, label);
+            mod_ComputerCraft.sendToPlayer(player, packet);
         }
     }
 

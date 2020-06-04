@@ -20,12 +20,18 @@ public class ContainerDiskDrive extends Container {
 
     public ContainerDiskDrive(IInventory iinventory, TileEntityDiskDrive tileentitydiskdrive) {
         this.diskDrive = tileentitydiskdrive;
+        
+        //disk drive slot
         this.addSlot(new Slot((IInventory)this.diskDrive, 0, 80, 35));
+        
+        //inventory
         for (int j = 0; j < 3; ++j) {
             for (int i1 = 0; i1 < 9; ++i1) {
                 this.addSlot(new Slot(iinventory, i1 + j * 9 + 9, 8 + i1 * 18, 84 + j * 18));
             }
         }
+        
+        //hotbar
         for (int k = 0; k < 9; ++k) {
             this.addSlot(new Slot(iinventory, k, 8 + k * 18, 142));
         }
@@ -43,9 +49,13 @@ public class ContainerDiskDrive extends Container {
         	ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy(); 
             //can't figure out what these methods were supposed to be, one matching method but doesn't return a boolean
-            //if (i == 0 ? !this.a(itemstack1, 1, 37, true) : !this.a(itemstack1, 0, 1, false)) {
+            //if (i == 0 ? !this.func_28125_a(itemstack1, 1, 37, true) : !this.func_28125_a(itemstack1, 0, 1, false)) {
             //    return null;
             //}
+            if(i == 0)
+            {
+            	this.func_28125_a(itemstack1, 0, 1, false);
+            }
             if (itemstack1.stackSize == 0) {
                 slot.putStack(null);
             } else {

@@ -29,8 +29,8 @@ extends BlockContainer
         super(i, Material.rock);
     }
 
-    public int a(int i, Random random, int j) {
-        return mod_ComputerCraft.diskDriveBlockID;
+    public int idDropped(int i, Random random) {
+        return blockID;
     }
 
     public void onBlockAdded(World world, int i, int j, int k) {
@@ -130,14 +130,6 @@ extends BlockContainer
     }
 
     public boolean canProvidePower() {
-        return false;
-    }
-
-    public boolean isPoweringTo(IBlockAccess iblockaccess, int i, int j, int k, int l) {
-        return false;
-    }
-
-    public boolean isIndirectlyPoweringTo(World world, int i, int j, int k, int l) {
         return false;
     }
 }

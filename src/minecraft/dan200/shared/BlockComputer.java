@@ -30,6 +30,7 @@ public class BlockComputer extends BlockContainer {
     
     public BlockComputer(int i) {
         super(i, Material.rock);
+        setTickOnLoad(true);
     }
 
     public int idDropped(int paramInt, Random paramRandom) {
@@ -40,6 +41,7 @@ public class BlockComputer extends BlockContainer {
         super.onBlockAdded(world, i, j, k);
         this.setDefaultDirection(world, i, j, k);
         refreshInput(world, i, j, k);
+        world.scheduleBlockUpdate(i, j, k, blockID, tickRate());
     }
     
     private boolean isBlockProvidingPower(World world, int i, int j, int k, int l) {
@@ -59,7 +61,7 @@ public class BlockComputer extends BlockContainer {
     private void refreshInput(World world, int i, int j, int k) {
         TileEntityComputer computer = (TileEntityComputer)world.getBlockTileEntity(i, j, k);
         if (computer != null) {
-            int m = world.getBlockId(i, j, k);
+            int m = world.getBlockMetadata(i, j, k);
             computer.providePower(BlockComputer.getLocalSide(0, m), this.isBlockProvidingPower(world, i, j + 1, k, 1));
             computer.providePower(BlockComputer.getLocalSide(1, m), this.isBlockProvidingPower(world, i, j - 1, k, 0));
             computer.providePower(BlockComputer.getLocalSide(2, m), this.isBlockProvidingPower(world, i, j, k + 1, 3));
@@ -161,6 +163,7 @@ public class BlockComputer extends BlockContainer {
         	if (!entityplayer.isSneaking())
         	{
         		computer.setSwitchedOn(true);
+        		//this.refreshInput(world, x, y, z);
         		ModLoader.OpenGUI(entityplayer, (GuiScreen)new GuiComputer(computer));
         		return true;
         	}
@@ -176,9 +179,18 @@ public class BlockComputer extends BlockContainer {
         }
         return false;
     }
-
-    public void updateTick(World world, int i, int j, int k, int l) {
+    
+    public void updateTick(World world, int i, int j, int k, Random random) {
         this.refreshInput(world, i, j, k);
+        System.out.println("ComputerCraft: updateTick");
+        
+        //things don't update properly unless we do this terribleness
+        world.scheduleBlockUpdate(i, j, k, blockID, tickRate());
+    }
+    
+    public int tickRate()
+    {
+        return 1;
     }
     
     public void onBlockRemoval(World world, int i, int j, int k) {
@@ -261,9 +273,9 @@ public class BlockComputer extends BlockContainer {
     
 	@Override
 	protected TileEntity getBlockEntity() {
-		Class<TileEntityComputer> computer = TileEntityComputer.class;
+		Class computer = RedPowerInterop.getComputerClass();
 		try {
-		      return computer.newInstance();
+		      return (TileEntity) computer.newInstance();
 		    } catch (Exception e) {
 		      return new TileEntityComputer();
 		    } 
