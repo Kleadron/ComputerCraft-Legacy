@@ -14,9 +14,10 @@ Computer recipe changed from glass pane to glass block.
 
 Multiplayer does not work yet, and a lot of multiplayer code was stripped out for simplicity but will be re-added back
 
-## Info
+## How to build
+You will need a working MCP v4.3 environment with modloader and modloadermp installed.
 
-
+## Links
 This is licensed under the same license as seen at https://github.com/dan200/ComputerCraft
 
 Tools used: 
