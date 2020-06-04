@@ -26,6 +26,8 @@ Resources used:
 
 https://github.com/FabricMC/Enigma
 
+https://minecraft.gamepedia.com/Programs_and_editors/Mod_Coder_Pack
+
 CC classes are manually remapped using mapping files from MCP v5.6
 
 Web archive link to the minecraft forum page with CC 1.21:
