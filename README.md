@@ -22,10 +22,11 @@ To see dan200 and org.luaj.vm2, under Client in the Package Explorer, right clic
 ## Links
 This is licensed under the same license as seen at https://github.com/dan200/ComputerCraft
 
-Tools used: 
+Resources used: 
 
 https://github.com/FabricMC/Enigma
 
+CC classes are manually remapped using mapping files from MCP v5.6
 
 Web archive link to the minecraft forum page with CC 1.21:
 http://web.archive.org/web/20120208211521/http://www.minecraftforum.net/topic/892282-11-computercraft-121/
