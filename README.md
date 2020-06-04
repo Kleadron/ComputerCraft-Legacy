@@ -17,11 +17,17 @@ Multiplayer does not work yet, and a lot of multiplayer code was stripped out fo
 ## How to build
 You will need a working MCP v4.3 environment with modloader and modloadermp installed.
 
+To see dan200 and org.luaj.vm2, under Client in the Package Explorer, right click "src" and click properties. Go to resource > resource filters, remove the resource filter that says "Name matches net"
+
 ## Links
 This is licensed under the same license as seen at https://github.com/dan200/ComputerCraft
 
 Tools used: 
 
 https://github.com/FabricMC/Enigma
+
+
+Web archive link to the minecraft forum page with CC 1.21:
+http://web.archive.org/web/20120208211521/http://www.minecraftforum.net/topic/892282-11-computercraft-121/
 
 
