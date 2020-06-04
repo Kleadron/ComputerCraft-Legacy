@@ -54,3 +54,6 @@ hs_err_pid*
 !/src/minecraft/net/minecraft/src
 /src/minecraft/net/minecraft/src/*
 !/src/minecraft/net/minecraft/src/mod_ComputerCraft.java
+
+# Mod Resources
+!/jars/mods/ComputerCraft
