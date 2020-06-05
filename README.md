@@ -4,15 +4,13 @@ Currently incomplete.
 
 
 ## Current Status
-Computers are nearly complete but do not properly interact with redstone. For some bizzare reason, they can provide power to redpower alloy wires, but still cannot read from them. They properly save to your world folder, but as long as the world name is without any special characters as far as I'm aware. I might be wrong.
+Computers are nearly complete but do not properly interact with redstone. For some bizzare reason, they can provide power to redpower alloy wires, but can only read redstone signals in all other cases. They properly save to your world folder, but as long as the world name is without any special characters as far as I'm aware. I might be wrong.
 
-Disk drive does not work and will crash the game if you put anything in it, especially anything that isn't a disk. For some reason, the light is red.
-
-Disks are indeterminate, without a disk drive to use them.
+Disk drives and disks work! Unfortunately because Item.addInformation doesn't exist in this version, you won't be able to see the disk's label from your inventory :( 
 
 Computer recipe changed from glass pane to glass block.
 
-Multiplayer does not work yet, and a lot of multiplayer code was stripped out for simplicity but will be re-added back
+Multiplayer does not work yet, and a lot of multiplayer code was stripped out for simplicity but will be re-added back.
 
 ## How to build
 You will need a working MCP v4.3 environment with modloader and modloadermp installed.
