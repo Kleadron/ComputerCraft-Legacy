@@ -74,10 +74,10 @@ public class ComputerThread
 						    		}
 						    		it.remove();
 						    	}
-							    /*
+							    
 							    m_computerTasksActive.addAll(m_computerTasksPending); // put any that have been added since
 							    m_computerTasksPending.clear();
-							    */
+							    
 						    }
 						}
 						
@@ -224,7 +224,7 @@ public class ComputerThread
             }
             else
             {
-                //System.out.println( "Event queue overflow" );
+                System.out.println( "Event queue overflow" );
             }
 		}
 		

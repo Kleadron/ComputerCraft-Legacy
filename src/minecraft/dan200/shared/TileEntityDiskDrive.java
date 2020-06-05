@@ -90,13 +90,21 @@ IComputerCraftEntity
         super.readFromNBT(nbttagcompound);
         NBTTagCompound item = nbttagcompound.getCompoundTag("item");
         this.diskStack = new ItemStack(item);
+        //System.out.println("Disk Drive Read: Item ID " + diskStack.itemID);
+        if (diskStack.itemID == 0)
+        {
+        	diskStack = null;
+        }
     }
 
     public void writeToNBT(NBTTagCompound nbttagcompound) {
         super.writeToNBT(nbttagcompound);
         NBTTagCompound item = new NBTTagCompound();
         if (this.diskStack != null) {
-            this.diskStack.writeToNBT(item);
+            item = this.diskStack.writeToNBT(item);
+        } else {
+        	diskStack = new ItemStack(0, 0, 0);
+        	item = this.diskStack.writeToNBT(item);
         }
         nbttagcompound.setCompoundTag("item", item);
     }
