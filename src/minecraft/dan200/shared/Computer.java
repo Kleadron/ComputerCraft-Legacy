@@ -6,6 +6,18 @@
 
 package dan200.shared;
 
+import dan200.shared.ComputerThread;
+import dan200.shared.ComputerThreadTask;
+import dan200.shared.FileSystem;
+import dan200.shared.FileSystemException;
+import dan200.shared.HTTPRequest;
+import dan200.shared.HTTPRequestException;
+import dan200.shared.ItemDisk;
+import dan200.shared.Terminal;
+import dan200.shared.TileEntityComputer;
+import net.minecraft.src.ChatAllowedCharacters;
+import net.minecraft.src.mod_ComputerCraft;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -18,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import dan200.shared.Computer;
+import dan200.shared.HTTPRequest;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
@@ -29,9 +43,6 @@ import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
-
-import net.minecraft.src.ChatAllowedCharacters;
-import net.minecraft.src.mod_ComputerCraft;
 
 public class Computer
  {
@@ -45,8 +56,8 @@ public class Computer
     private boolean m_stopped;
     private boolean m_aborted;
     private boolean m_blinking;
-    private ArrayList<Computer.Timer> m_timers;
-    private ArrayList<Computer.Alarm> m_alarms;
+    private ArrayList<Timer> m_timers;
+    private ArrayList<Alarm> m_alarms;
     private ArrayList<HTTPRequest> m_httpRequests;
     private LuaValue m_mainFunction;
     private LuaValue m_globals;
@@ -279,8 +290,8 @@ public class Computer
                 object = this;
                 synchronized (this) {
                     if (this.m_on) {
-                    	boolean[] j = this.m_input;
-                        synchronized (j) {
+                        boolean[] i = this.m_input;
+                        synchronized (i) {
                             if (this.m_inputChanged) {
                                 if (this.m_id == 42) {
                                     System.out.println("QUEUE " + this.m_bundledInput[3]);
@@ -300,8 +311,8 @@ public class Computer
                             }
                         }
                         this.m_clock += _dt;
-                        ArrayList<Computer.Timer> i = this.m_timers;
-                        synchronized (i) {
+                        ArrayList<Timer> j = this.m_timers;
+                        synchronized (j) {
                             Iterator it = this.m_timers.iterator();
                             while (it.hasNext()) {
                                 Timer t = (Timer)it.next();
@@ -319,7 +330,7 @@ public class Computer
                                 it.remove();
                             }
                         }
-                        ArrayList<Computer.Alarm> k = this.m_alarms;
+                        ArrayList<Alarm> k = this.m_alarms;
                         synchronized (k) {
                             double prevTime = this.m_time;
                             double time = (double)((this.m_owner.worldObj.getWorldTime() + 6000L) % 24000L) / 1000.0;
@@ -391,7 +402,7 @@ public class Computer
                                 it.remove();
                             }
                         }
-                    }//  MonitorExit[var3_2 / !! / ] (shouldn't be in output)
+                    }// ** MonitorExit[var3_2 /* !! */ ] (shouldn't be in output)
 
                     object = this.m_terminal;
                     synchronized (object) {
@@ -405,9 +416,7 @@ public class Computer
                             return;
                         }
                     }
-                    
                 }
-                
             }
         }
     }
@@ -1378,7 +1387,7 @@ public class Computer
                 LuaTable token = new LuaTable();
                 List list = Computer.this.m_alarms;
                 synchronized (list) {
-                    //Computer.this.m_alarms.add(new Alarm(time, token));
+                    Computer.this.m_alarms.add(new Alarm(time, token));
                 }
                 return token;
             }
@@ -1423,10 +1432,10 @@ public class Computer
             @Override
             public LuaValue call() {
                 Computer.this.tryAbort();
-                //54 var1_1 = this;
-                //synchronized (var1_1) {
+                Object var1_1 = this;
+                synchronized (var1_1) {
                     return LuaValue.valueOf((float)Computer.this.m_clock);
-                //}
+                }
             }
         }
         );
@@ -1438,10 +1447,10 @@ public class Computer
             @Override
             public LuaValue call() {
                 Computer.this.tryAbort();
-                //55 var1_1 = this;
-                //synchronized (var1_1) {
+                Object var1_1 = this;
+                synchronized (var1_1) {
                     return LuaValue.valueOf(Computer.this.m_time);
-                //}
+                }
             }
         }
         );
@@ -1527,8 +1536,8 @@ public class Computer
                  */
                 @Override
                 public void execute() {
-                    //57 var1_1 = this;
-                    //synchronized (var1_1) {
+                	Object var1_1 = this;
+                    synchronized (var1_1) {
                         Terminal terminal = Computer.this.m_terminal;
                         synchronized (terminal) {
                             Computer.this.m_terminal.clear();
@@ -1537,7 +1546,7 @@ public class Computer
                         }
                         Computer.this.initFileSystem();
                         Computer.this.initLua();
-                    //}
+                    }
                 }
             }, this
             );
@@ -1581,8 +1590,8 @@ public class Computer
              */
             @Override
             public void execute() {
-                //59 var1_1 = this;
-                //synchronized (var1_1) {
+            	Object var1_1 = this;
+                synchronized (var1_1) {
                     int i;
                     System.out.println("really stopping");
                     Object object = Computer.this.m_terminal;
@@ -1631,7 +1640,7 @@ public class Computer
                         Computer.this.m_mainFunction = null;
                         Computer.this.m_globals = null;
                     }
-                //}
+                }
             }
         }, this
         );
@@ -1660,12 +1669,12 @@ public class Computer
              */
             @Override
             public void execute() {
-                //60 var1_1 = this;
-                //synchronized (var1_1) {
+                Object var1_1 = this;
+                synchronized (var1_1) {
                     if (!Computer.this.m_on || Computer.this.m_stopped) {
                         return;
                     }
-                //}
+                }
                 try {
                     LuaValue[] args = _event.getArguments();
                     if (Computer.this.m_mainFunction != null) {
@@ -1674,7 +1683,7 @@ public class Computer
                         if (Computer.this.m_aborted) {
                             Computer.this.m_aborted = false;
                         }
-                        //System.out.println("finishing");
+                        System.out.println("finishing");
                         if (!results.arg1().checkboolean()) {
                             throw new LuaError(results.arg(2).checkstring().toString());
                         }
@@ -1751,7 +1760,7 @@ public class Computer
              */
             @Override
             public void execute() {
-                DriveInfo[] arrdriveInfo = m_drives;
+                DriveInfo[] arrdriveInfo = Computer.this.m_drives;
                 synchronized (this) {
                     if (!Computer.this.m_on || Computer.this.m_stopped) {
 // ** MonitorExit[var1_1] (shouldn't be in output)
@@ -1805,7 +1814,7 @@ public class Computer
              */
             @Override
             public void execute() {
-                DriveInfo[] arrdriveInfo = m_drives;
+                DriveInfo[] arrdriveInfo = Computer.this.m_drives;
                 synchronized (this) {
                     if (!Computer.this.m_on || Computer.this.m_stopped) {
 // ** MonitorExit[var1_1] (shouldn't be in output)
@@ -2033,7 +2042,7 @@ public class Computer
         boolean eject = false;
     }
 
-    private abstract class Alarm
+    private class Alarm
     implements Comparable
      {
         double time;
@@ -2061,6 +2070,12 @@ public class Computer
             }
             return 0;
         }
+
+		@Override
+		public int compareTo(Object arg0) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
     }
 
     private class Timer
