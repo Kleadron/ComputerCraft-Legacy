@@ -163,7 +163,7 @@ public class BlockComputer extends BlockContainer {
         	if (!entityplayer.isSneaking())
         	{
         		computer.setSwitchedOn(true);
-        		//this.refreshInput(world, x, y, z);
+        		this.updateTick(world, x, y, z, null);
         		ModLoader.OpenGUI(entityplayer, (GuiScreen)new GuiComputer(computer));
         		return true;
         	}
@@ -182,7 +182,7 @@ public class BlockComputer extends BlockContainer {
     
     public void updateTick(World world, int i, int j, int k, Random random) {
         this.refreshInput(world, i, j, k);
-        System.out.println("ComputerCraft: updateTick");
+        //System.out.println("ComputerCraft: updateTick");
         
         //things don't update properly unless we do this terribleness
         world.scheduleBlockUpdate(i, j, k, blockID, tickRate());

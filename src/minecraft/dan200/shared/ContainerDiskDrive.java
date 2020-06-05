@@ -49,12 +49,9 @@ public class ContainerDiskDrive extends Container {
         	ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy(); 
             //can't figure out what these methods were supposed to be, one matching method but doesn't return a boolean
-            //if (i == 0 ? !this.func_28125_a(itemstack1, 1, 37, true) : !this.func_28125_a(itemstack1, 0, 1, false)) {
-            //    return null;
-            //}
-            if(i == 0)
-            {
-            	this.func_28125_a(itemstack1, 0, 1, false);
+            //UPDATE: possible fix
+            if (i == 0 ? !this.mergeItemStack(itemstack1, 1, 37, true) : !this.mergeItemStack(itemstack1, 0, 1, false)) {
+                return null;
             }
             if (itemstack1.stackSize == 0) {
                 slot.putStack(null);
@@ -68,5 +65,84 @@ public class ContainerDiskDrive extends Container {
             }
         }
         return itemstack;
+    }
+    
+    protected boolean mergeItemStack(ItemStack itemstack, int i, int j, boolean flag)
+    {
+        boolean flag1 = false;
+        int k = i;
+        if(flag)
+        {
+            k = j - 1;
+        }
+        if(itemstack.isStackable())
+        {
+            while(itemstack.stackSize > 0 && (!flag && k < j || flag && k >= i)) 
+            {
+                Slot slot = (Slot)slots.get(k);
+                ItemStack itemstack1 = slot.getStack();
+                if(itemstack1 != null && itemstack1.itemID == itemstack.itemID && (!itemstack.getHasSubtypes() || itemstack.getItemDamage() == itemstack1.getItemDamage()))
+                {
+                    int i1 = itemstack1.stackSize + itemstack.stackSize;
+                    if(i1 <= itemstack.getMaxStackSize())
+                    {
+                        itemstack.stackSize = 0;
+                        itemstack1.stackSize = i1;
+                        slot.onSlotChanged();
+                        flag1 = true;
+                    } else
+                    if(itemstack1.stackSize < itemstack.getMaxStackSize())
+                    {
+                        itemstack.stackSize -= itemstack.getMaxStackSize() - itemstack1.stackSize;
+                        itemstack1.stackSize = itemstack.getMaxStackSize();
+                        slot.onSlotChanged();
+                        flag1 = true;
+                    }
+                }
+                if(flag)
+                {
+                    k--;
+                } else
+                {
+                    k++;
+                }
+            }
+        }
+        if(itemstack.stackSize > 0)
+        {
+            int l;
+            if(flag)
+            {
+                l = j - 1;
+            } else
+            {
+                l = i;
+            }
+            do
+            {
+                if((flag || l >= j) && (!flag || l < i))
+                {
+                    break;
+                }
+                Slot slot1 = (Slot)slots.get(l);
+                ItemStack itemstack2 = slot1.getStack();
+                if(itemstack2 == null)
+                {
+                    slot1.putStack(itemstack.copy());
+                    slot1.onSlotChanged();
+                    itemstack.stackSize = 0;
+                    flag1 = true;
+                    break;
+                }
+                if(flag)
+                {
+                    l--;
+                } else
+                {
+                    l++;
+                }
+            } while(true);
+        }
+        return flag1;
     }
 }

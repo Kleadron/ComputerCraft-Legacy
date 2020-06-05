@@ -57,7 +57,7 @@ IComputerCraftEntity
     @Override
 	public ItemStack decrStackSize(int i, int j) {
     	ItemStack disk = this.diskStack;
-        //this.a(i, null); //WHAT IS a
+        this.setInventorySlotContents(i, null);
         return disk;
     }
 
@@ -86,17 +86,17 @@ IComputerCraftEntity
         return "Disk Drive";
     }
 
-    public void writeToNBT(NBTTagCompound nbttagcompound) {
-        super.writeToNBT(nbttagcompound);
+    public void readFromNBT(NBTTagCompound nbttagcompound) {
+        super.readFromNBT(nbttagcompound);
         NBTTagCompound item = nbttagcompound.getCompoundTag("item");
         this.diskStack = new ItemStack(item);
     }
 
-    public void readFromNBT(NBTTagCompound nbttagcompound) {
-        super.readFromNBT(nbttagcompound);
+    public void writeToNBT(NBTTagCompound nbttagcompound) {
+        super.writeToNBT(nbttagcompound);
         NBTTagCompound item = new NBTTagCompound();
         if (this.diskStack != null) {
-            this.diskStack.readFromNBT(item);
+            this.diskStack.writeToNBT(item);
         }
         nbttagcompound.setCompoundTag("item", item);
     }
@@ -173,7 +173,7 @@ IComputerCraftEntity
     }
 
     public int getDataDiskID() {
-        if (this.diskStack != null && this.diskStack.itemID == mod_ComputerCraft.diskItemID) {
+        if (this.diskStack != null && this.diskStack.itemID == mod_ComputerCraft.disk.shiftedIndex) {
             return ItemDisk.getDiskID(this.diskStack, this.worldObj);
         }
         return -1;
