@@ -7,7 +7,7 @@
 package dan200.shared;
 
 import dan200.shared.TileEntityComputer;
-import net.minecraft.src.World;
+import net.minecraft.src.IBlockAccess;
 
 import java.lang.reflect.Method;
 
@@ -40,8 +40,8 @@ public class RedPowerInterop
                 System.out.println("ComputerCraft: Searching for RedPowerLib...");
                 redPowerLib = Class.forName("eloraam.core.RedPowerLib");
                 redPowerLib_isSearching = RedPowerInterop.findRedPowerMethod("isSearching", new Class[0]);
-                redPowerLib_isPoweringTo = RedPowerInterop.findRedPowerMethod("isPoweringTo", new Class[]{World.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE});
-                redPowerLib_getPowerState = RedPowerInterop.findRedPowerMethod("getPowerState", new Class[]{World.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE});
+                redPowerLib_isPoweringTo = RedPowerInterop.findRedPowerMethod("isPoweringTo", new Class[]{IBlockAccess.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE});
+                redPowerLib_getPowerState = RedPowerInterop.findRedPowerMethod("getPowerState", new Class[]{IBlockAccess.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE});
                 redPowerLib_getConDirMask = RedPowerInterop.findRedPowerMethod("getConDirMask", new Class[]{Integer.TYPE});
                 redPowerLib_addCompatibleMapping = RedPowerInterop.findRedPowerMethod("addCompatibleMapping", new Class[]{Integer.TYPE, Integer.TYPE});
                 System.out.println("ComputerCraft: RedPowerLib and methods located.");
@@ -74,11 +74,11 @@ public class RedPowerInterop
         return false;
     }
 
-    public static boolean isPoweringTo(World world, int i, int j, int k, int l) {
+    public static boolean isPoweringTo(IBlockAccess iblockaccess, int i, int j, int k, int l) {
         RedPowerInterop.findRedPower();
         if (redPowerLib_isPoweringTo != null) {
             try {
-                Object result = redPowerLib_isPoweringTo.invoke(null, new Object[]{world, i, j, k, l});
+                Object result = redPowerLib_isPoweringTo.invoke(null, new Object[]{iblockaccess, i, j, k, l});
                 return (Boolean)result;
             }
             catch (Exception e) {
@@ -88,11 +88,11 @@ public class RedPowerInterop
         return false;
     }
 
-    public static int getPowerState(World world, int i, int j, int k, int cons, int ch) {
+    public static int getPowerState(IBlockAccess iblockaccess, int i, int j, int k, int cons, int ch) {
         RedPowerInterop.findRedPower();
         if (redPowerLib_getPowerState != null) {
             try {
-                Object result = redPowerLib_getPowerState.invoke(null, new Object[]{world, i, j, k, cons, ch});
+                Object result = redPowerLib_getPowerState.invoke(null, new Object[]{iblockaccess, i, j, k, cons, ch});
                 return (Integer)result;
             }
             catch (Exception e) {

@@ -1685,7 +1685,7 @@ public class Computer
                         if (Computer.this.m_aborted) {
                             Computer.this.m_aborted = false;
                         }
-                        System.out.println("finishing");
+                        //System.out.println("finishing");
                         if (!results.arg1().checkboolean()) {
                             throw new LuaError(results.arg(2).checkstring().toString());
                         }
