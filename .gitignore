@@ -54,7 +54,7 @@ hs_err_pid*
 !/src/minecraft/net/minecraft/src
 /src/minecraft/net/minecraft/src/*
 !/src/minecraft/net/minecraft/src/mod_ComputerCraft.java
-!/src/minecraft/eloraam/core/IRedPowerAPI.java
+!/src/minecraft/eloraam/core
 !/src/minecraft/dan200
 !/src/minecraft/org
 
