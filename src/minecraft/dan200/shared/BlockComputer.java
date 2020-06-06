@@ -41,11 +41,11 @@ public class BlockComputer extends BlockContainer {
         super.onBlockAdded(world, i, j, k);
         this.setDefaultDirection(world, i, j, k);
         refreshInput(world, i, j, k);
-        world.scheduleBlockUpdate(i, j, k, blockID, tickRate());
+        //world.scheduleBlockUpdate(i, j, k, blockID, tickRate());
     }
     
     private boolean isBlockProvidingPower(World world, int i, int j, int k, int l) {
-    	return world.isBlockProvidingPowerTo(i, j, k, l) || world.getBlockId(i, j, k) == Block.redstoneWire.blockID && world.getBlockMetadata(i, j, k) > 0 || RedPowerInterop.isPoweringTo((World)world, i, j, k, l);
+    	return world.isBlockIndirectlyProvidingPowerTo(i, j, k, l) || world.getBlockId(i, j, k) == Block.redstoneWire.blockID && world.getBlockMetadata(i, j, k) > 0 || RedPowerInterop.isPoweringTo((World)world, i, j, k, l);
       }
     
     private int getBundledPowerOutput(World world, int i, int j, int k, int side) {
