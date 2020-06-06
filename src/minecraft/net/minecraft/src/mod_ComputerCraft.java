@@ -62,7 +62,7 @@ public class mod_ComputerCraft extends BaseModMp {
         System.out.println("ComputerCraft: computerBlockID " + computerBlockID);
         System.out.println("ComputerCraft: diskDriveBlockID " + diskDriveBlockID);
         System.out.println("ComputerCraft: diskItemID " + diskItemID);
-        System.out.println("ComputerCraft: To change IDs, modify config/mod_ComputerCraft.cfg");
+        //System.out.println("ComputerCraft: To change IDs, modify config/mod_ComputerCraft.cfg"); unimplemented
         computer = new BlockComputer(computerBlockID);
         computer.setHardness(1.0f).setBlockName("computer"); //.setRequiresSelfNotify(); does not exist in this version, might be why redstone doesn't work?
         ModLoader.RegisterBlock((Block)computer);
