@@ -171,13 +171,19 @@ public class BlockComputer extends BlockContainer {
         return false;
     }
     
+    public boolean isBlockNormalCube(World world, int i, int j, int k) {
+	    return false;
+    }
+    
     public boolean isPoweringTo(IBlockAccess iblockaccess, int i, int j, int k, int l) {
+    	//System.out.println("ComputerCraft: isPoweringTo");
         TileEntityComputer computer = (TileEntityComputer)iblockaccess.getBlockTileEntity(i, j, k);
         if (computer != null) {
             int side = BlockComputer.getLocalSide(l, iblockaccess.getBlockMetadata(i, j, k));
             return computer.isPowering(side);
         }
         return false;
+        
     }
     
     public void updateTick(World world, int i, int j, int k, Random random) {
@@ -185,7 +191,12 @@ public class BlockComputer extends BlockContainer {
         //System.out.println("ComputerCraft: updateTick");
         
         //things don't update properly unless we do this terribleness
-        world.scheduleBlockUpdate(i, j, k, blockID, tickRate());
+        //world.scheduleBlockUpdate(i, j, k, blockID, tickRate());
+    }
+    
+    public void onNeighborBlockChange(World world, int i, int j, int k, int l)
+    {
+    	this.refreshInput(world, i, j, k);
     }
     
     public int tickRate()

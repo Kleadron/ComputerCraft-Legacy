@@ -429,6 +429,8 @@ public class Computer
         synchronized (this.m_output) {
             if (this.m_outputChanged) {
                 this.m_outputChanged = false;
+                //m_owner.worldObj.markBlocksDirty(m_owner.xCoord, m_owner.yCoord, m_owner.zCoord, m_owner.xCoord, m_owner.yCoord, m_owner.zCoord);
+                m_owner.worldObj.notifyBlocksOfNeighborChange(m_owner.xCoord, m_owner.yCoord, m_owner.zCoord, mod_ComputerCraft.computer.blockID);
 // ** MonitorExit[var1_1] (shouldn't be in output)
                 return true;
             }// ** MonitorExit[var1_1] (shouldn't be in output)
