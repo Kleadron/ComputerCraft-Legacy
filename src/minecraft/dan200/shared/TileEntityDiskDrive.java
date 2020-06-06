@@ -90,7 +90,7 @@ IComputerCraftEntity
         super.readFromNBT(nbttagcompound);
         NBTTagCompound item = nbttagcompound.getCompoundTag("item");
         this.diskStack = new ItemStack(item);
-        System.out.println("Disk Drive Read: Item ID " + diskStack.itemID);
+        //System.out.println("Disk Drive Read: Item ID " + diskStack.itemID);
         //if the item id is 0 we have nothing in it
         if (diskStack.itemID == 0)
         	diskStack = null;
@@ -100,11 +100,11 @@ IComputerCraftEntity
         super.writeToNBT(nbttagcompound);
         NBTTagCompound item = new NBTTagCompound();
         if (this.diskStack != null) {
-        	System.out.println("Disk Drive Save: Item ID " + diskStack.itemID);
+        	//System.out.println("Disk Drive Save: Item ID " + diskStack.itemID);
             item = this.diskStack.writeToNBT(item);
         } else {
         	diskStack = new ItemStack(0, 0, 0);
-        	System.out.println("Disk Drive Save: Item ID " + diskStack.itemID);
+        	//System.out.println("Disk Drive Save: Item ID " + diskStack.itemID);
         	item = this.diskStack.writeToNBT(item);
         	this.diskStack = null;
         }

@@ -23,19 +23,30 @@ import net.minecraft.client.Minecraft;
 
 public class mod_ComputerCraft extends BaseModMp {
 	
+	@MLProp
     public static int computerBlockID = 207;
+    @MLProp
     public static int diskDriveBlockID = 208;
+    @MLProp
     public static int diskItemID = 4000;
     public static int diskDriveGUIID = 100;
+    @MLProp
     public static int enableAPI_http = 1;
+    @MLProp
     public static int enableAPI_luajava = 0;
     public static final int terminal_defaultWidth = 50;
     public static final int terminal_defaultHeight = 18;
+    @MLProp
     public static int terminal_width = 50;
+    @MLProp
     public static int terminal_height = 18;
+    @MLProp
     public static int terminal_textColour_r = 255;
+    @MLProp
     public static int terminal_textColour_g = 255;
+    @MLProp
     public static int terminal_textColour_b = 255;
+    
     public static mod_ComputerCraft instance;
     public static FixedWidthFontRenderer fixedWidthFontRenderer;
     public static BlockComputer computer;
@@ -62,7 +73,7 @@ public class mod_ComputerCraft extends BaseModMp {
         System.out.println("ComputerCraft: computerBlockID " + computerBlockID);
         System.out.println("ComputerCraft: diskDriveBlockID " + diskDriveBlockID);
         System.out.println("ComputerCraft: diskItemID " + diskItemID);
-        //System.out.println("ComputerCraft: To change IDs, modify config/mod_ComputerCraft.cfg"); unimplemented
+        System.out.println("ComputerCraft: To change IDs, modify config/mod_ComputerCraft.cfg");
         computer = new BlockComputer(computerBlockID);
         computer.setHardness(1.0f).setBlockName("computer"); //.setRequiresSelfNotify(); does not exist in this version, might be why redstone doesn't work?
         ModLoader.RegisterBlock((Block)computer);
