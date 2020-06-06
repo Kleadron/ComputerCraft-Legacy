@@ -4,9 +4,8 @@ Currently incomplete.
 
 
 ## Current Status
-Computers are nearly complete but do not properly interact with redstone. For some bizzare reason, they can provide power to redpower alloy wires, but can only read redstone signals in all other cases. They properly save to your world folder, but as long as the world name is without any special characters as far as I'm aware. I might be wrong.
-
-There is an odd issue with block updating which can cause the computer to not refresh its inputs, but if it isn't working you can force it to start by opening the computer, and it should keep working at least until you exit the world again.
+Computers can now output redstone signals correctly! They can read them as well, and are able to output redstone signals to red alloy wire from redpower but cannot read from them yet.
+Computers will properly save to your world folder, but as long as the world name is without any special characters as far as I'm aware. I might be wrong.
 
 Disk drives and disks work! Unfortunately because Item.addInformation doesn't exist in this version, you won't be able to see the disk's label from your inventory :( 
 
