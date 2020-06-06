@@ -1,5 +1,5 @@
 # ComputerCraft-Legacy
-A reverse engineering of ComputerCraft 1.21 for Legacy Minecraft.
+A reverse engineering and backport of ComputerCraft 1.21 for Legacy Minecraft.
 
 ## Current Status
 Computers are now able to interact correctly with redstone, redpower red alloy wires and bundled cables!
