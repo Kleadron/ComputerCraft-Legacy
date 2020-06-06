@@ -81,10 +81,10 @@ public class mod_ComputerCraft extends BaseModMp {
         ModLoader.AddRecipe((ItemStack)new ItemStack((Item)disk, 1), (Object[])new Object[]{"X", "Y", Character.valueOf('X'), Item.redstone, Character.valueOf('Y'), Item.paper});
         
         //testing recipes
-        ModLoader.AddRecipe((ItemStack)new ItemStack((Item)disk, 1), (Object[])new Object[]{"XX", "X ", 'X', Block.dirt});
-        ModLoader.AddRecipe((ItemStack)new ItemStack(Item.recordCat, 1), (Object[])new Object[]{"X", "X", 'X', Block.dirt});
-        ModLoader.AddRecipe((ItemStack)new ItemStack((Block)diskDrive, 1), (Object[])new Object[]{"XX", 'X', Block.dirt});
-        ModLoader.AddRecipe((ItemStack)new ItemStack((Block)computer, 1), (Object[])new Object[]{"X", 'X', Block.dirt});
+        //ModLoader.AddRecipe((ItemStack)new ItemStack((Item)disk, 1), (Object[])new Object[]{"XX", "X ", 'X', Block.dirt});
+        //ModLoader.AddRecipe((ItemStack)new ItemStack(Item.recordCat, 1), (Object[])new Object[]{"X", "X", 'X', Block.dirt});
+        //ModLoader.AddRecipe((ItemStack)new ItemStack((Block)diskDrive, 1), (Object[])new Object[]{"XX", 'X', Block.dirt});
+        //ModLoader.AddRecipe((ItemStack)new ItemStack((Block)computer, 1), (Object[])new Object[]{"X", 'X', Block.dirt});
 
         ModLoaderMp.RegisterGUI((BaseModMp)this, (int)diskDriveGUIID);
         m_tickCount = 0;
