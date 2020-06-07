@@ -24,14 +24,11 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1518,80 +1515,128 @@ public class Computer
     	if(!biosFolder.exists()) {
     		biosFolder.mkdirs();
     	}
-        if(!bios.exists()) {
-        	URL defaultBiosURL = this.getClass().getResource("/lua/bios.lua");
-            if(defaultBiosURL != null) {
-            	try {
-            		File defaultBiosFile = new File(defaultBiosURL.toURI());
-            		copyFolder(defaultBiosFile.getParentFile(), bios.getParentFile());
-				} catch (URISyntaxException e) {
-					e.printStackTrace();
-				}
+    	if(!bios.exists()) {
+    		String[] files = new String[]{
+    			"bios.lua",
+    			"rom/startup",
+    			"rom/apis/bit",
+    			"rom/apis/colors",
+    			"rom/apis/help",
+    			"rom/apis/io",
+    			"rom/apis/parallel",
+    			"rom/apis/rednet",
+    			"rom/apis/textutils",
+    			"rom/help/adventure",
+    			"rom/help/alias",
+    			"rom/help/apis",
+    			"rom/help/bit",
+    			"rom/help/cd",
+    			"rom/help/clear",
+    			"rom/help/colors",
+    			"rom/help/colours",
+    			"rom/help/copy",
+    			"rom/help/coroutine",
+    			"rom/help/credits",
+    			"rom/help/delete",
+    			"rom/help/disk",
+    			"rom/help/dj",
+    			"rom/help/drive",
+    			"rom/help/edit",
+    			"rom/help/eject",
+    			"rom/help/events",
+    			"rom/help/exit",
+    			"rom/help/fs",
+    			"rom/help/hello",
+    			"rom/help/help",
+    			"rom/help/helpapi",
+    			"rom/help/http",
+    			"rom/help/id",
+    			"rom/help/intro",
+    			"rom/help/io",
+    			"rom/help/label",
+    			"rom/help/list",
+    			"rom/help/lua",
+    			"rom/help/math",
+    			"rom/help/mkdir",
+    			"rom/help/move",
+    			"rom/help/os",
+    			"rom/help/parallel",
+    			"rom/help/programming",
+    			"rom/help/reboot",
+    			"rom/help/rednet",
+    			"rom/help/redpower",
+    			"rom/help/redprobe",
+    			"rom/help/redpulse",
+    			"rom/help/redset",
+    			"rom/help/redstone",
+    			"rom/help/rename",
+    			"rom/help/rs",
+    			"rom/help/shell",
+    			"rom/help/shellapi",
+    			"rom/help/shutdown",
+    			"rom/help/sleep",
+    			"rom/help/string",
+    			"rom/help/table",
+    			"rom/help/term",
+    			"rom/help/textutils",
+    			"rom/help/time",
+    			"rom/help/type",
+    			"rom/help/whatsnew",
+    			"rom/help/worm",
+    			"rom/programs/adventure",
+    			"rom/programs/alias",
+    			"rom/programs/apis",
+    			"rom/programs/cd",
+    			"rom/programs/clear",
+    			"rom/programs/copy",
+    			"rom/programs/delete",
+    			"rom/programs/dj",
+    			"rom/programs/drive",
+    			"rom/programs/edit",
+    			"rom/programs/eject",
+    			"rom/programs/exit",
+    			"rom/programs/hello",
+    			"rom/programs/help",
+    			"rom/programs/id",
+    			"rom/programs/label",
+    			"rom/programs/list",
+    			"rom/programs/lua",
+    			"rom/programs/mkdir",
+    			"rom/programs/move",
+    			"rom/programs/programs",
+    			"rom/programs/reboot",
+    			"rom/programs/redprobe",
+    			"rom/programs/redpulse",
+    			"rom/programs/redset",
+    			"rom/programs/rename",
+    			"rom/programs/shell",
+    			"rom/programs/shutdown",
+    			"rom/programs/sleep",
+    			"rom/programs/time",
+    			"rom/programs/type",
+    			"rom/programs/worm"
+    		};
+    		for(String file : files) {
+    			new File(biosFolder, file).mkdirs();
+    			copy(getClass().getResourceAsStream("/lua/" + file), biosFolder.getPath() + "/" + file);
     		}
+    		copy(this.getClass().getResourceAsStream("/lua/bios.lua"), bios.getPath());
+    		
         }
         return biosFolder;
     }
     
-    private void copyFolder(File source, File destination)
-	{
-	    if (source.isDirectory())
-	    {
-	        if (!destination.exists())
-	        {
-	            destination.mkdirs();
-	        }
-
-	        String files[] = source.list();
-
-	        for (String file : files)
-	        {
-	            File srcFile = new File(source, file);
-	            File destFile = new File(destination, file);
-
-	            copyFolder(srcFile, destFile);
-	        }
-	    }
-	    else
-	    {
-	        InputStream in = null;
-	        OutputStream out = null;
-
-	        try
-	        {
-	            in = new FileInputStream(source);
-	            out = new FileOutputStream(destination);
-
-	            byte[] buffer = new byte[1024];
-
-	            int length;
-	            while ((length = in.read(buffer)) > 0)
-	            {
-	                out.write(buffer, 0, length);
-	            }
-	        }
-	        catch (Exception e)
-	        {
-	            try
-	            {
-	                in.close();
-	            }
-	            catch (IOException e1)
-	            {
-	                e1.printStackTrace();
-	            }
-
-	            try
-	            {
-	                out.close();
-	            }
-	            catch (IOException e1)
-	            {
-	                e1.printStackTrace();
-	            }
-	        }
-	    }
-	}
-
+    private boolean copy(InputStream source , String destination) {
+        boolean succeess = true;
+        try {
+            Files.copy(source, Paths.get(destination), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            succeess = false;
+        }
+        return succeess;
+    }
+    
     /*
 // WARNING - Removed try catching itself - possible behaviour change.
      */
