@@ -47,6 +47,9 @@ public class mod_ComputerCraft extends BaseModMp {
     @MLProp
     public static int terminal_textColour_b = 255;
     
+    @MLProp
+    public static String luaFolder = "/mods/ComputerCraft/lua";
+    
     public static mod_ComputerCraft instance;
     public static FixedWidthFontRenderer fixedWidthFontRenderer;
     public static BlockComputer computer;
