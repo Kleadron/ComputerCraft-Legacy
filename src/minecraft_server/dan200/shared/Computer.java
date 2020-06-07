@@ -15,6 +15,7 @@ import dan200.shared.HTTPRequestException;
 import dan200.shared.ItemDisk;
 import dan200.shared.Terminal;
 import dan200.shared.TileEntityComputer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.ChatAllowedCharacters;
 import net.minecraft.src.mod_ComputerCraft;
 
@@ -23,9 +24,13 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -466,7 +471,7 @@ public class Computer
     }
 
     private void initFileSystem() {
-        File romDir = new File(mod_ComputerCraft.getModDir(), "lua/rom");
+    	File romDir = new File(getBiosFolder(), "rom");
         File userDir = this.getUserDir(true);
         try {
             this.m_fileSystem = new FileSystem(userDir, false);
@@ -1485,7 +1490,7 @@ public class Computer
             globals.set("http", (LuaValue)http);
         }
         try {
-            File bios = new File(mod_ComputerCraft.getModDir(), "lua/bios.lua");
+        	File bios = new File(getBiosFolder(), "bios.lua");
             LuaValue program = globals.get("assert").call(loadfile.call(LuaValue.valueOf(bios.toString())));
             LuaValue coroutine = globals.get("coroutine");
             this.m_mainFunction = coroutine.get("create").call(program);
@@ -1494,7 +1499,7 @@ public class Computer
         catch (LuaError e) {
             Terminal terminal = this.m_terminal;
             synchronized (terminal) {
-                this.m_terminal.write("Failed to load mods/ComputerCraft/lua/bios.lua");
+                this.m_terminal.write("Failed to " + mod_ComputerCraft.luaFolder + "/bios.lua");
                 this.m_terminal.setCursorPos(0, this.m_terminal.getCursorY() + 1);
                 this.m_terminal.write("Check you have installed ComputerCraft correctly.");
             }
@@ -1503,6 +1508,87 @@ public class Computer
             this.m_globals = null;
         }
     }
+    
+    private File getBiosFolder() {
+    	File biosFolder = new File(".", mod_ComputerCraft.luaFolder);
+    	File bios = new File(biosFolder, "bios.lua");
+    	
+    	if(!biosFolder.exists()) {
+    		biosFolder.mkdirs();
+    	}
+        if(!bios.exists()) {
+        	URL defaultBiosURL = this.getClass().getResource("/lua/bios.lua");
+            if(defaultBiosURL != null) {
+            	try {
+            		File defaultBiosFile = new File(defaultBiosURL.toURI());
+            		copyFolder(defaultBiosFile.getParentFile(), bios.getParentFile());
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+    		}
+        }
+        return biosFolder;
+    }
+    
+    private void copyFolder(File source, File destination)
+	{
+	    if (source.isDirectory())
+	    {
+	        if (!destination.exists())
+	        {
+	            destination.mkdirs();
+	        }
+
+	        String files[] = source.list();
+
+	        for (String file : files)
+	        {
+	            File srcFile = new File(source, file);
+	            File destFile = new File(destination, file);
+
+	            copyFolder(srcFile, destFile);
+	        }
+	    }
+	    else
+	    {
+	        InputStream in = null;
+	        OutputStream out = null;
+
+	        try
+	        {
+	            in = new FileInputStream(source);
+	            out = new FileOutputStream(destination);
+
+	            byte[] buffer = new byte[1024];
+
+	            int length;
+	            while ((length = in.read(buffer)) > 0)
+	            {
+	                out.write(buffer, 0, length);
+	            }
+	        }
+	        catch (Exception e)
+	        {
+	            try
+	            {
+	                in.close();
+	            }
+	            catch (IOException e1)
+	            {
+	                e1.printStackTrace();
+	            }
+
+	            try
+	            {
+	                out.close();
+	            }
+	            catch (IOException e1)
+	            {
+	                e1.printStackTrace();
+	            }
+	        }
+	    }
+	}
 
     /*
 // WARNING - Removed try catching itself - possible behaviour change.
