@@ -11,9 +11,9 @@ Disk drives and disks work! Unfortunately because Item.addInformation doesn't ex
 
 Computer recipe changed from glass pane to glass block.
 
-Multiplayer does not work yet, and a lot of multiplayer code was stripped out for simplicity but will be re-added back.
+Multiplayer does not work yet, but is being experimented with.
 
-Config is a mystery and I will have to figure it out.
+Config is working!
 
 ## How to build
 You will need a working MCP v4.3 environment with modloader and modloadermp installed.
