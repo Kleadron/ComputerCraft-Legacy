@@ -15,6 +15,7 @@ import dan200.shared.HTTPRequestException;
 import dan200.shared.ItemDisk;
 import dan200.shared.Terminal;
 import dan200.shared.TileEntityComputer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.ChatAllowedCharacters;
 import net.minecraft.src.mod_ComputerCraft;
 
@@ -26,6 +27,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -466,7 +470,7 @@ public class Computer
     }
 
     private void initFileSystem() {
-        File romDir = new File(mod_ComputerCraft.getModDir(), "lua/rom");
+    	File romDir = new File(getBiosFolder(), "rom");
         File userDir = this.getUserDir(true);
         try {
             this.m_fileSystem = new FileSystem(userDir, false);
@@ -1485,7 +1489,7 @@ public class Computer
             globals.set("http", (LuaValue)http);
         }
         try {
-            File bios = new File(mod_ComputerCraft.getModDir(), "lua/bios.lua");
+        	File bios = new File(getBiosFolder(), "bios.lua");
             LuaValue program = globals.get("assert").call(loadfile.call(LuaValue.valueOf(bios.toString())));
             LuaValue coroutine = globals.get("coroutine");
             this.m_mainFunction = coroutine.get("create").call(program);
@@ -1494,7 +1498,7 @@ public class Computer
         catch (LuaError e) {
             Terminal terminal = this.m_terminal;
             synchronized (terminal) {
-                this.m_terminal.write("Failed to load mods/ComputerCraft/lua/bios.lua");
+                this.m_terminal.write("Failed to " + mod_ComputerCraft.luaFolder + "/bios.lua");
                 this.m_terminal.setCursorPos(0, this.m_terminal.getCursorY() + 1);
                 this.m_terminal.write("Check you have installed ComputerCraft correctly.");
             }
@@ -1502,6 +1506,135 @@ public class Computer
             this.m_mainFunction = null;
             this.m_globals = null;
         }
+    }
+    
+    private File getBiosFolder() {
+    	File biosFolder = new File(".", mod_ComputerCraft.luaFolder);
+    	File bios = new File(biosFolder, "bios.lua");
+    	
+    	if(!biosFolder.exists()) {
+    		biosFolder.mkdirs();
+    	}
+    	if(!bios.exists()) {
+    		String[] files = new String[]{
+    			"bios.lua",
+    			"rom/startup",
+    			"rom/apis/bit",
+    			"rom/apis/colors",
+    			"rom/apis/help",
+    			"rom/apis/io",
+    			"rom/apis/parallel",
+    			"rom/apis/rednet",
+    			"rom/apis/textutils",
+    			"rom/help/adventure",
+    			"rom/help/alias",
+    			"rom/help/apis",
+    			"rom/help/bit",
+    			"rom/help/cd",
+    			"rom/help/clear",
+    			"rom/help/colors",
+    			"rom/help/colours",
+    			"rom/help/copy",
+    			"rom/help/coroutine",
+    			"rom/help/credits",
+    			"rom/help/delete",
+    			"rom/help/disk",
+    			"rom/help/dj",
+    			"rom/help/drive",
+    			"rom/help/edit",
+    			"rom/help/eject",
+    			"rom/help/events",
+    			"rom/help/exit",
+    			"rom/help/fs",
+    			"rom/help/hello",
+    			"rom/help/help",
+    			"rom/help/helpapi",
+    			"rom/help/http",
+    			"rom/help/id",
+    			"rom/help/intro",
+    			"rom/help/io",
+    			"rom/help/label",
+    			"rom/help/list",
+    			"rom/help/lua",
+    			"rom/help/math",
+    			"rom/help/mkdir",
+    			"rom/help/move",
+    			"rom/help/os",
+    			"rom/help/parallel",
+    			"rom/help/programming",
+    			"rom/help/reboot",
+    			"rom/help/rednet",
+    			"rom/help/redpower",
+    			"rom/help/redprobe",
+    			"rom/help/redpulse",
+    			"rom/help/redset",
+    			"rom/help/redstone",
+    			"rom/help/rename",
+    			"rom/help/rs",
+    			"rom/help/shell",
+    			"rom/help/shellapi",
+    			"rom/help/shutdown",
+    			"rom/help/sleep",
+    			"rom/help/string",
+    			"rom/help/table",
+    			"rom/help/term",
+    			"rom/help/textutils",
+    			"rom/help/time",
+    			"rom/help/type",
+    			"rom/help/whatsnew",
+    			"rom/help/worm",
+    			"rom/programs/adventure",
+    			"rom/programs/alias",
+    			"rom/programs/apis",
+    			"rom/programs/cd",
+    			"rom/programs/clear",
+    			"rom/programs/copy",
+    			"rom/programs/delete",
+    			"rom/programs/dj",
+    			"rom/programs/drive",
+    			"rom/programs/edit",
+    			"rom/programs/eject",
+    			"rom/programs/exit",
+    			"rom/programs/hello",
+    			"rom/programs/help",
+    			"rom/programs/id",
+    			"rom/programs/label",
+    			"rom/programs/list",
+    			"rom/programs/lua",
+    			"rom/programs/mkdir",
+    			"rom/programs/move",
+    			"rom/programs/programs",
+    			"rom/programs/reboot",
+    			"rom/programs/redprobe",
+    			"rom/programs/redpulse",
+    			"rom/programs/redset",
+    			"rom/programs/rename",
+    			"rom/programs/shell",
+    			"rom/programs/shutdown",
+    			"rom/programs/sleep",
+    			"rom/programs/time",
+    			"rom/programs/type",
+    			"rom/programs/worm"
+    		};
+    		for(String file : files) {
+    			new File(biosFolder, file).mkdirs();
+    			copy(getClass().getResourceAsStream("/lua/" + file), biosFolder.getPath() + "/" + file);
+    		}
+    		copy(this.getClass().getResourceAsStream("/lua/bios.lua"), bios.getPath());
+    		
+        }
+        return biosFolder;
+    }
+    
+    private boolean copy(InputStream source , String destination) {
+        boolean succeess = true;
+        try {
+            Files.copy(source, Paths.get(destination), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            succeess = false;
+        }
+        return succeess;
     }
 
     /*
