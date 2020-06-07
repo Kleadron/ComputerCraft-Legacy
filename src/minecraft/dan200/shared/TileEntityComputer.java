@@ -33,8 +33,8 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
         this.m_destroyed = false;
     }
 
-    public void validate() {
-        //super.validate(); WHAT IS VAILIDAAAAAATE
+    public void func_31004_j() {
+        super.func_31004_j();
         if (mod_ComputerCraft.isMultiplayerClient()) {
             Packet230ModLoader packet = new Packet230ModLoader();
             packet.packetType = 5;

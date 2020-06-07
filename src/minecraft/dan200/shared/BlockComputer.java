@@ -18,6 +18,7 @@ import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.Material;
 import net.minecraft.src.MathHelper;
 import net.minecraft.src.ModLoader;
+import net.minecraft.src.Packet230ModLoader;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraft.src.mod_ComputerCraft;
@@ -158,15 +159,20 @@ public class BlockComputer extends BlockContainer {
     }
     
     public boolean blockActivated(World world, int x, int y, int z, EntityPlayer entityplayer) {
-        TileEntityComputer computer = (TileEntityComputer)world.getBlockTileEntity(x, y, z);
-        if (computer != null) {
-        	if (!entityplayer.isSneaking())
-        	{
-        		computer.setSwitchedOn(true);
-        		this.updateTick(world, x, y, z, null);
-        		ModLoader.OpenGUI(entityplayer, (GuiScreen)new GuiComputer(computer));
-        		return true;
-        	}
+    	if (mod_ComputerCraft.isMultiplayerClient()) {
+            return true;
+        }
+        if (!entityplayer.isSneaking()) {
+            TileEntityComputer computer = (TileEntityComputer)world.getBlockTileEntity(x, y, z);
+            if (computer != null) {
+                Packet230ModLoader packet = new Packet230ModLoader();
+                packet.packetType = 1;
+                packet.dataInt = new int[]{x, y, z};
+                mod_ComputerCraft.sendToPlayer(entityplayer, packet);
+                computer.setSwitchedOn(true);
+                computer.updateClient(entityplayer);
+            }
+            return true;
         }
         return false;
     }

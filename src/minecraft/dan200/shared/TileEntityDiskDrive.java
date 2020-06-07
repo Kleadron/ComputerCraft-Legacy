@@ -30,8 +30,8 @@ IComputerCraftEntity
     private boolean m_firstFrame = true;
     private int m_clientDiskLight = 0;
 
-    public void validate() {
-        //super.validate(); WHAT IS VALIDATE
+    public void func_31004_j() {
+        super.func_31004_j();
         if (mod_ComputerCraft.isMultiplayerClient()) {
             Packet230ModLoader packet = new Packet230ModLoader();
             packet.packetType = 5;
