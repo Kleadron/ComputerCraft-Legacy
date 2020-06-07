@@ -15,7 +15,7 @@ local tDirs = {}
 for n, sItem in pairs( tAll ) do
 	local sPath = fs.combine( sDir, sItem )
 	if fs.isDir( sPath ) then
-		table.insert( tDirs, sItem .. "/" )
+		table.insert( tDirs, sItem .. "/" ) -- telling apart directory from file
 	else
 		table.insert( tFiles, sItem )
 	end
