@@ -234,7 +234,10 @@ function os.run( _tEnv, _sPath, ... )
         if not ok then
         	if err and err ~= "" then
 	        	print( err )
-				graphics.setMode(false)
+				if graphics then 
+					graphics.setMode(false)
+				end
+				
 	        end
         	return false
         end
@@ -242,7 +245,9 @@ function os.run( _tEnv, _sPath, ... )
     end
     if err and err ~= "" then
 		print( err )
-		graphics.setMode(false)
+		if graphics then 
+			graphics.setMode(false)
+		end
 	end
     return false
 end

@@ -794,7 +794,8 @@ public class Computer
         globals.set("term", (LuaValue)term);
         
         //graphics api
-        if (mod_ComputerCraft.enableGraphicsMode > 0) {
+        
+        if (mod_ComputerCraft.enableAPI_graphics > 0) {
         	LuaTable graphics = new LuaTable();
             graphics.set("setMode", (LuaValue)new OneArgFunction(){
                 @Override

@@ -22,12 +22,10 @@ import net.minecraft.src.mod_ComputerCraft;
 
 public class GuiComputer extends GuiScreen {
   private TileEntityComputer m_computer;
-  
   private float m_terminateTimer;
-  
   private float m_rebootTimer;
-  
   private float m_shutdownTimer;
+  private static int graphicsScreenID = GL11.glGenTextures();
   
   public GuiComputer(TileEntityComputer tileentitycomputer) {
     this.m_computer = tileentitycomputer;
@@ -137,8 +135,7 @@ public class GuiComputer extends GuiScreen {
       drawTexturedModalRect(endX, startY, 36, 28, 12, termHeight); //right bar
        
       if (terminal.getBitmapMode()) {
-  		int textureID = GL11.glGenTextures();
-  		this.mc.renderEngine.setupTexture(terminal.getScreenBuffer(), textureID);
+  		this.mc.renderEngine.setupTexture(terminal.getScreenBuffer(), graphicsScreenID);
   		drawTexturedModalRectClamped(startX+2, startY+2, termWidth-4, termHeight-4);
   	  } else {
   		int textColour = (mod_ComputerCraft.terminal_textColour_r << 16) + (mod_ComputerCraft.terminal_textColour_g << 8) + (mod_ComputerCraft.terminal_textColour_b << 0);
