@@ -1,17 +1,21 @@
 
 -- Install lua parts of the os api
 function os.version()
-	return "CraftOS 1.2"
+	--if turtle then
+	--	return "TurtleOS 1.2 Extended"
+	--end
+	return "CraftOS 1.2 Extended"
 end
 
-function os.pullEventRaw()
-	return coroutine.yield()
+function os.pullEventRaw( _sFilter )
+	return coroutine.yield( _sFilter )
 end
 
-function os.pullEvent()
-	local event, p1, p2, p3, p4, p5 = os.pullEventRaw()
+function os.pullEvent( _sFilter )
+	local event, p1, p2, p3, p4, p5 = os.pullEventRaw( _sFilter )
 	if event == "terminate" then
-		error( "Terminated" )
+		print( "Terminated" )
+		error()
 	end
 	return event, p1, p2, p3, p4, p5
 end
@@ -20,8 +24,8 @@ end
 function sleep( _nTime )
     local timer = os.startTimer( _nTime )
 	repeat
-		local sEvent, param = os.pullEvent()
-	until sEvent == "timer" and param == timer
+		local sEvent, param = os.pullEvent( "timer" )
+	until param == timer
 end
 
 function write( sText )
@@ -199,7 +203,7 @@ end
 loadfile = function( _sFile )
 	local file = fs.open( _sFile, "r" )
 	if file then
-		local func, err = loadstring( file.readAll(), _sFile )
+		local func, err = loadstring( file.readAll(), fs.getName( _sFile ) )
 		file.close()
 		return func, err
 	end
@@ -228,31 +232,47 @@ function os.run( _tEnv, _sPath, ... )
         	fnFile( unpack( tArgs ) )
         end )
         if not ok then
-        	print( err )
+        	if err and err ~= "" then
+	        	print( err )
+				graphics.setMode(false)
+	        end
         	return false
         end
         return true
     end
-<<<<<<< Updated upstream
-    print( err )
-=======
     if err and err ~= "" then
 		print( err )
 		graphics.setMode(false)
 	end
->>>>>>> Stashed changes
     return false
+end
+
+local nativegetmetatable = getmetatable
+function getmetatable( _t )
+	if type( _t ) == "string" then
+		error( "Attempt to access string metatable" )
+	end
+	return nativegetmetatable( _t )
 end
 
 local bProtected = true
 local function protect( _t )
-	setmetatable( _t, { __newindex = function( t, k, v )
-		if bProtected then
-			error( "Attempt to write to global" )
-		else
-			rawset( t, k, v )
-		end
-	end } )
+	local meta = getmetatable( _t )
+	if meta == "Protected" then
+		-- already protected
+		return
+	end
+	
+	setmetatable( _t, {
+		__newindex = function( t, k, v )
+			if bProtected then
+				error( "Attempt to write to global" )
+			else
+				rawset( t, k, v )
+			end
+		end,
+		__metatable = "Protected",
+	} )
 end
 
 local tAPIsLoading = {}
@@ -290,9 +310,9 @@ function os.loadAPI( _sPath )
 end
 
 function os.unloadAPI( _sName )
-	if _sName ~= "_G" and type(_G[_sName] == "table") then
+	if _sName ~= "_G" and type(_G[_sName]) == "table" then
 		bProtected = false
-		_G[sName] = nil
+		_G[_sName] = nil
 		bProtected = true
 	end
 end
@@ -309,10 +329,10 @@ function os.shutdown()
 	end
 end
 
--- Install the lua parts of the HTTP api (if enabled)
+-- Install the lua part of the HTTP api (if enabled)
 if http then
-	http.get = function( _url )
-		local requestID = http.request( _url )
+	local function wrapRequest( _url, _post )
+		local requestID = http.request( _url, _post )
 		while true do
 			local event, param1, param2 = os.pullEvent()
 			if event == "http_success" and param1 == _url then
@@ -320,9 +340,35 @@ if http then
 			elseif event == "http_failure" and param1 == _url then
 				return nil
 			end
-		end
+		end		
+	end
+	
+	http.get = function( _url )
+		return wrapRequest( _url, nil )
+	end
+
+	http.post = function( _url, _post )
+		return wrapRequest( _url, _post or "" )
 	end
 end
+
+-- Install the lua part of the peripheral api
+if peripheral then 
+	peripheral.wrap = function( _sSide )
+		if peripheral.isPresent( _sSide ) then
+			local tMethods = peripheral.getMethods( _sSide )
+			local tResult = {}
+			for n,sMethod in ipairs( tMethods ) do
+				tResult[sMethod] = function( ... )
+					return peripheral.call( _sSide, sMethod, ... )
+				end
+			end
+			return tResult
+		end
+		return nil
+	end
+end
+
 
 -- Protect the global table against modifications
 protect( _G )
@@ -335,11 +381,26 @@ end
 -- Load APIs
 local tApis = fs.list( "rom/apis" )
 for n,sFile in ipairs( tApis ) do
-	if not fs.isDir( sFile ) then
-		os.loadAPI( fs.combine( "rom/apis", sFile ) )
+	if string.sub( sFile, 1, 1 ) ~= "." then
+		local sPath = fs.combine( "rom/apis", sFile )
+		if not fs.isDir( sPath ) then
+			os.loadAPI( sPath )
+		end
 	end
 end
-	
+
+if turtle then
+	local tApis = fs.list( "rom/apis/turtle" )
+	for n,sFile in ipairs( tApis ) do
+		if string.sub( sFile, 1, 1 ) ~= "." then
+			local sPath = fs.combine( "rom/apis/turtle", sFile )
+			if not fs.isDir( sPath ) then
+				os.loadAPI( sPath )
+			end
+		end
+	end
+end
+
 -- Run the shell
 local ok, err = pcall( function()
 	parallel.waitForAny(
@@ -351,17 +412,15 @@ local ok, err = pcall( function()
 		end
 	)
 end )
+
+-- If the shell errored, let the user read it.
 if not ok then
 	print( err )
 end
 
--- If the shell didn't shutdown the computer,
--- it probably errored, so let the user read it.
 pcall( function()
 	term.setCursorBlink( false )
 	print( "Press any key to continue" )
-	repeat
-		local event, p = os.pullEvent()
-	until event == "key"
+	os.pullEvent( "key" ) 
 end )
-os.shutdown() -- Just in case
+os.shutdown()
