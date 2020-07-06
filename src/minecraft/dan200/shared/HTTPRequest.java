@@ -33,7 +33,8 @@ public class HTTPRequest
        this.m_urlString = _url;
        try {
            this.m_url = new URL(_url);
-           if (!this.m_url.getProtocol().toLowerCase().equals("http")) {
+           String protocol = this.m_url.getProtocol().toLowerCase();
+           if (!protocol.equals("http") && !protocol.equals("https")) {
                throw new HTTPRequestException("Not an HTTP URL");
            }
        }

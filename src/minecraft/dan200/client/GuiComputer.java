@@ -136,7 +136,7 @@ public class GuiComputer extends GuiScreen {
        
       if (terminal.getBitmapMode()) {
   		this.mc.renderEngine.setupTexture(terminal.getScreenBuffer(), m_graphicsScreenID);
-  		drawTexturedModalRectClamped(startX+2, startY+2, termWidth-4, termHeight-4);
+  		drawTexturedModalRectClamped(startX+2, startY+2, terminal.getBitmapWidth(), terminal.getBitmapHeight());
   	  } else {
   		int textColour = (mod_ComputerCraft.terminal_textColour_r << 16) + (mod_ComputerCraft.terminal_textColour_g << 8) + (mod_ComputerCraft.terminal_textColour_b << 0);
         int x = startX + 2;

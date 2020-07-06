@@ -1808,6 +1808,7 @@ public class Computer
     			"rom/apis/rednet",
     			"rom/apis/textutils",
     			"rom/apis/keys",
+    			"rom/apis/vector",
     			"rom/help/adventure",
     			"rom/help/alias",
     			"rom/help/apis",
