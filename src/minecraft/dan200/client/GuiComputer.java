@@ -25,7 +25,7 @@ public class GuiComputer extends GuiScreen {
   private float m_terminateTimer;
   private float m_rebootTimer;
   private float m_shutdownTimer;
-  private static int graphicsScreenID = GL11.glGenTextures();
+  private static int m_graphicsScreenID = GL11.glGenTextures(); //DO NOT DO THIS EVERY TICK
   
   public GuiComputer(TileEntityComputer tileentitycomputer) {
     this.m_computer = tileentitycomputer;
@@ -135,7 +135,7 @@ public class GuiComputer extends GuiScreen {
       drawTexturedModalRect(endX, startY, 36, 28, 12, termHeight); //right bar
        
       if (terminal.getBitmapMode()) {
-  		this.mc.renderEngine.setupTexture(terminal.getScreenBuffer(), graphicsScreenID);
+  		this.mc.renderEngine.setupTexture(terminal.getScreenBuffer(), m_graphicsScreenID);
   		drawTexturedModalRectClamped(startX+2, startY+2, termWidth-4, termHeight-4);
   	  } else {
   		int textColour = (mod_ComputerCraft.terminal_textColour_r << 16) + (mod_ComputerCraft.terminal_textColour_g << 8) + (mod_ComputerCraft.terminal_textColour_b << 0);
