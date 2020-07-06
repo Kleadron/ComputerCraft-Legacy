@@ -664,7 +664,7 @@ public class Computer
 // WARNING - Removed try catching itself - possible behaviour change.
      */
     private void initLua() {
-        LuaTable globals = JsePlatform.standardGlobals();
+        LuaTable globals = JsePlatform.debugGlobals();
         LuaValue loadfile = globals.get("loadfile");
         globals.set("io", LuaValue.NIL);
         globals.set("dofile", LuaValue.NIL);
@@ -1738,17 +1738,22 @@ public class Computer
         
         if (mod_ComputerCraft.enableAPI_http > 0) {
             LuaTable http = new LuaTable();
-            http.set("request", (LuaValue)new OneArgFunction(){
+            http = new LuaTable();
+            ((LuaValue)http).set("request", (LuaValue)new TwoArgFunction(){
 
                 /*
 // WARNING - Removed try catching itself - possible behaviour change.
                  */
                 @Override
-                public LuaValue call(LuaValue _url) {
+                public LuaValue call(LuaValue _url, LuaValue _post) {
                     Computer.this.tryAbort();
                     String urlString = _url.checkstring().toString();
+                    String postString = null;
+                    if (_post.isstring()) {
+                        postString = _post.checkstring().toString();
+                    }
                     try {
-                        HTTPRequest request = new HTTPRequest(urlString);
+                        HTTPRequest request = new HTTPRequest(urlString, postString);
                         List list = Computer.this.m_httpRequests;
                         synchronized (list) {
                             Computer.this.m_httpRequests.add(request);
@@ -1856,6 +1861,7 @@ public class Computer
     			"rom/help/table",
     			"rom/help/term",
     			"rom/help/textutils",
+    			"rom/help/vector",
     			"rom/help/time",
     			"rom/help/type",
     			"rom/help/whatsnew",
@@ -1893,6 +1899,7 @@ public class Computer
     			"rom/programs/sleep",
     			"rom/programs/time",
     			"rom/programs/type",
+    			"rom/programs/pastebin",
     			"rom/programs/worm"
     		};
     		for(String file : files) {

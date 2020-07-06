@@ -1,0 +1,2 @@
+graphics.setMode(false)
+print("Graphics set to text mode")
