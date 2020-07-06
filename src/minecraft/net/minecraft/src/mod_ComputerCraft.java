@@ -35,7 +35,7 @@ public class mod_ComputerCraft extends BaseModMp {
     @MLProp
     public static int enableAPI_luajava = 0;
     @MLProp
-    public static int enableAPI_graphics = 0;
+    public static int enableAPI_graphics = 1;
     public static final int terminal_defaultWidth = 50;
     public static final int terminal_defaultHeight = 18;
     @MLProp
@@ -50,7 +50,7 @@ public class mod_ComputerCraft extends BaseModMp {
     public static int terminal_textColour_b = 255;
     
     @MLProp
-    public static String luaFolder = "/mods/ComputerCraft/lua";
+    public static String luaFolder = "/ComputerCraft/lua";
     
     public static mod_ComputerCraft instance;
     public static FixedWidthFontRenderer fixedWidthFontRenderer;

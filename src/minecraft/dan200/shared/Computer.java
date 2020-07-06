@@ -862,6 +862,30 @@ public class Computer
                 }
             }
             );
+            graphics.set("fillRect", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.fillRect();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("drawRect", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.drawRect();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
             /*
             graphics.set("drawArc", new ZeroArgFunction(){
                 @Override
@@ -906,30 +930,6 @@ public class Computer
                     Terminal terminal = Computer.this.m_terminal;
                     synchronized (terminal) {
                     	Computer.this.m_terminal.fillOval();
-                    }
-                    return LuaValue.NIL;
-                }
-            }
-            );
-            graphics.set("fillRect", new ZeroArgFunction(){
-                @Override
-                public LuaValue call() {
-                    Computer.this.tryAbort();
-                    Terminal terminal = Computer.this.m_terminal;
-                    synchronized (terminal) {
-                    	Computer.this.m_terminal.fillRect();
-                    }
-                    return LuaValue.NIL;
-                }
-            }
-            );
-            graphics.set("drawRect", new ZeroArgFunction(){
-                @Override
-                public LuaValue call() {
-                    Computer.this.tryAbort();
-                    Terminal terminal = Computer.this.m_terminal;
-                    synchronized (terminal) {
-                    	Computer.this.m_terminal.drawRect();
                     }
                     return LuaValue.NIL;
                 }
@@ -1038,6 +1038,18 @@ public class Computer
                     Terminal terminal = Computer.this.m_terminal;
                     synchronized (terminal) {
                     	Computer.this.m_terminal.setPixel();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("clearPixel", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.clearPixel();
                     }
                     return LuaValue.NIL;
                 }
@@ -1863,6 +1875,7 @@ public class Computer
     			"rom/programs/exit",
     			"rom/programs/hello",
     			"rom/programs/help",
+    			"rom/programs/text",
     			"rom/programs/id",
     			"rom/programs/label",
     			"rom/programs/list",

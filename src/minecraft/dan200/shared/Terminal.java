@@ -204,26 +204,37 @@ public class Terminal {
 	  int y = m_coordStack.pop() - 1;
 	  m_graphics.fillRect(x, y, 1, 1);
   }
+  public void clearPixel() {
+	  int x = m_coordStack.pop() - 1;
+	  int y = m_coordStack.pop() - 1;
+	  m_graphics.clearRect(x, y, 1, 1);
+  }
   
   public void pushCoord(int x, int y) {
 	  m_coordStack.push(y);
 	  m_coordStack.push(x);
   }
-  /*
   //rects
   public void fillRect() {
-	  m_graphics.fillRect(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop());
-  }*/
+	  int w = m_coordStack.pop();
+	  int h = m_coordStack.pop();
+	  int x = m_coordStack.pop() - 1;
+	  int y = m_coordStack.pop() - 1;
+	  m_graphics.fillRect(x, y, w, h);  }
   public void clearRect() {
 	  int w = m_coordStack.pop();
 	  int h = m_coordStack.pop();
 	  int x = m_coordStack.pop() - 1;
 	  int y = m_coordStack.pop() - 1;
 	  m_graphics.clearRect(x, y, w, h);
-  }/*
-  public void drawRect() {
-	  m_graphics.drawRect(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop());
   }
+  public void drawRect() {
+	  int w = m_coordStack.pop();
+	  int h = m_coordStack.pop();
+	  int x = m_coordStack.pop() - 1;
+	  int y = m_coordStack.pop() - 1;
+	  m_graphics.drawRect(x, y, w, h);
+  }/*
   public void drawRoundRect() {
 	  m_graphics.drawRoundRect(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop());
   }

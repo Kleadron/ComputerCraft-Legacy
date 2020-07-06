@@ -1,0 +1,46 @@
+== final initial graphics api ==
+
+
+graphics.
+api table
+
+setMode([boolean]) 
+enables or disables the bitmap graphics mode
+
+[integer]getWidth()
+[integer]getHeight()
+returns width and height of screen resolution
+
+clearScreen()
+clears the bitmap graphics screen buffer
+
+pushCoord([integer], [integer])
+pushes a set of coordinates onto the stack for functions to use, all following functions use stack values
+example: for drawing a line, push starting coordinates first and the ending coordinates last. this should give you an idea of how this works
+
+setPixel() stack |x, y|
+sets a pixel at the coordinate in the stack
+
+clearPixel() stack |x, y|
+clears a pixel at the coordinate in the stack
+
+fillRect() stack |x, y, width, height|
+clearRect() stack |x, y, width, height|
+fills, and clears rectangle of pixels using the coordinate and size values
+
+drawRect() stack |x, y, width, height|
+draws a hollow rectangle of pixels using the coordinate and size values
+
+copyArea() stack |x, y, width, height, delta x, delta y|
+copies an area of pixels using the coordinates, size, and delta values
+
+drawLine() stack |x1, y1, x2, y2|
+draws a line of pixels from the coordinates 1 to coordinates 2
+
+drawString([string]) stack |x, y|
+draws a string at the positon using the coordinates
+NOTE: string anchor is at the bottom left of the beginning of the string
+i don't know why it is like this, don't question it
+
+
+if you happen to be stuck in graphics mode, and you happen to probably be at the prompt, type "text" and it will restore the normal terminal
