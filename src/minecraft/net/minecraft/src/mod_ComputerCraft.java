@@ -84,7 +84,7 @@ public class mod_ComputerCraft extends BaseModMp {
         ModLoader.RegisterBlock((Block)computer);
         ModLoader.AddName((Object)((Object)computer), (String)"Computer");
         ModLoader.AddRecipe((ItemStack)new ItemStack((Block)computer, 1), (Object[])new Object[]{"XXX", "XYX", "XZX", Character.valueOf('X'), Block.stone, Character.valueOf('Y'), Item.redstone, Character.valueOf('Z'), Block.glass});
-        ModLoader.RegisterTileEntity((Class)RedPowerInterop.getComputerClass(), (String)"computer");
+        ModLoader.RegisterTileEntity(RedPowerInterop.getComputerClass(), (String)"computer");
         diskDrive = new BlockDiskDrive(diskDriveBlockID);
         diskDrive.setHardness(1.0f).setBlockName("diskdrive"); //.setRequiresSelfNotify();
         ModLoader.RegisterBlock((Block)diskDrive);
@@ -147,12 +147,12 @@ public class mod_ComputerCraft extends BaseModMp {
 	  }
 
 	public static File getModDir() {
-        Minecraft mc = ModLoader.getMinecraftInstance();
+        //Minecraft mc = ModLoader.getMinecraftInstance();
         return new File(Minecraft.getMinecraftDir(), "mods/ComputerCraft");
     }
 
     public static File getWorldDir(World world) {
-        Minecraft mc = ModLoader.getMinecraftInstance();
+        //Minecraft mc = ModLoader.getMinecraftInstance();
         return new File(Minecraft.getMinecraftDir(), "saves/" + world.worldInfo.getWorldName());
     }
     public static void openDiskDriveGUI(EntityPlayer entityplayer, TileEntityDiskDrive drive) {
