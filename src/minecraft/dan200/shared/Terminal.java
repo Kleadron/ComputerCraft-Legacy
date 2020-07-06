@@ -6,24 +6,31 @@
 
 package dan200.shared;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.util.Stack;
+
+import net.minecraft.src.mod_ComputerCraft;
+
 public class Terminal {
   private int m_cursorX;
-  
   private int m_cursorY;
-  
   private boolean m_cursorBlink;
-  
   private int m_width;
-  
   private int m_height;
-  
   private String m_emptyLine;
-  
   private String[] m_lines;
-  
   private boolean m_changed;
-  
   private boolean[] m_lineChanged;
+  
+  private boolean m_bitmapEnabled;
+  private BufferedImage m_bitmapScreen;
+  private Graphics m_graphics;
+  private int m_bitmapWidth;
+  private int m_bitmapHeight;
+  private Stack<Integer> m_coordStack = new Stack<Integer>();
   
   public Terminal(int width, int height) {
     this.m_width = width;
@@ -41,6 +48,17 @@ public class Terminal {
     this.m_cursorBlink = false;
     this.m_changed = false;
     this.m_lineChanged = new boolean[this.m_height];
+    this.m_bitmapEnabled = false;
+    m_bitmapWidth = m_width*mod_ComputerCraft.fixedWidthFontRenderer.FONT_WIDTH;
+    m_bitmapHeight = m_height*mod_ComputerCraft.fixedWidthFontRenderer.FONT_HEIGHT;
+    m_bitmapScreen = new BufferedImage(m_bitmapWidth, m_bitmapHeight, BufferedImage.TYPE_INT_RGB);
+    m_graphics = m_bitmapScreen.getGraphics();
+	m_graphics.setColor(new Color(mod_ComputerCraft.terminal_textColour_r, mod_ComputerCraft.terminal_textColour_g, mod_ComputerCraft.terminal_textColour_b));
+    clearBitmap();
+  }
+  
+  public void destroy() {
+	  m_graphics.dispose();
   }
   
   public int getWidth() {
@@ -166,5 +184,112 @@ public class Terminal {
       for (int y = 0; y < this.m_height; y++)
         this.m_lineChanged[y] = false; 
     } 
+  }
+  
+  //bitmap ahead
+  
+  public void setBitmapMode(boolean enable) {
+	  m_bitmapEnabled = enable;
+  }
+  public boolean getBitmapMode() {
+	  return m_bitmapEnabled;
+  }
+  
+  public BufferedImage getScreenBuffer() {
+	  return m_bitmapScreen;
+  }
+  
+  public void setPixel() {
+	  int x = m_coordStack.pop() - 1;
+	  int y = m_coordStack.pop() - 1;
+	  m_graphics.fillRect(x, y, 1, 1);
+  }
+  
+  public void pushCoord(int x, int y) {
+	  m_coordStack.push(y);
+	  m_coordStack.push(x);
+  }
+  /*
+  //rects
+  public void fillRect() {
+	  m_graphics.fillRect(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop());
+  }*/
+  public void clearRect() {
+	  int w = m_coordStack.pop();
+	  int h = m_coordStack.pop();
+	  int x = m_coordStack.pop() - 1;
+	  int y = m_coordStack.pop() - 1;
+	  m_graphics.clearRect(x, y, w, h);
+  }/*
+  public void drawRect() {
+	  m_graphics.drawRect(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop());
+  }
+  public void drawRoundRect() {
+	  m_graphics.drawRoundRect(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop());
+  }
+  public void fillRoundRect() {
+	  m_graphics.fillRoundRect(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop());
+  }
+  public void draw3DRectUnraised() {
+	  m_graphics.draw3DRect(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), false);
+  }
+  public void draw3DRectRaised() {
+	  m_graphics.draw3DRect(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), true);
+  }
+  public void fill3DRectUnraised() {
+	  m_graphics.fill3DRect(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), false);
+  }
+  public void fill3DRectRaised() {
+	  m_graphics.fill3DRect(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), true);
+  }
+  */
+  public void copyArea() {
+	  int dx = m_coordStack.pop();
+	  int dy = m_coordStack.pop();
+	  int w = m_coordStack.pop();
+	  int h = m_coordStack.pop();
+	  int x = m_coordStack.pop() - 1;
+	  int y = m_coordStack.pop() - 1;
+	  m_graphics.copyArea(x, y, w, h, dx, dy);
+  }
+  
+  //lines arcs
+  public void drawLine() {
+	  int x2 = m_coordStack.pop() - 1;
+	  int y2 = m_coordStack.pop() - 1;
+	  int x1 = m_coordStack.pop() - 1;
+	  int y1 = m_coordStack.pop() - 1;
+	  m_graphics.drawLine(x1, y1, x2, y2);
+  }
+  /*public void drawArc() {
+	  m_graphics.drawArc(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop());
+  }
+  public void fillArc() {
+	  m_graphics.fillArc(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop());
+  }
+  
+  //rounds
+  public void drawOval() {
+	  m_graphics.drawOval(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop());
+  }
+  public void fillOval() {
+	  m_graphics.fillOval(m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop(), m_coordStack.pop());
+  }
+  */
+  public void drawString(String string) {
+	  int x = m_coordStack.pop();
+	  int y = m_coordStack.pop();
+	  m_graphics.drawString(string, x, y);
+  }
+  
+  public int getBitmapWidth() {
+	  return m_bitmapWidth;
+  }
+  public int getBitmapHeight() {
+	  return m_bitmapHeight;
+  }
+  
+  public void clearBitmap() {
+	  m_graphics.clearRect(0, 0, m_bitmapWidth, m_bitmapHeight);
   }
 }

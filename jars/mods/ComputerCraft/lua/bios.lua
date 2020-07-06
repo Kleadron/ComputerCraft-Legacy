@@ -233,7 +233,14 @@ function os.run( _tEnv, _sPath, ... )
         end
         return true
     end
+<<<<<<< Updated upstream
     print( err )
+=======
+    if err and err ~= "" then
+		print( err )
+		graphics.setMode(false)
+	end
+>>>>>>> Stashed changes
     return false
 end
 

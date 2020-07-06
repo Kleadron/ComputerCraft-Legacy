@@ -6,12 +6,18 @@
 
 package dan200.client;
 
+import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import dan200.shared.Terminal;
 import dan200.shared.TileEntityComputer;
+import net.minecraft.src.GLAllocation;
 import net.minecraft.src.GuiScreen;
+import net.minecraft.src.Tessellator;
 import net.minecraft.src.mod_ComputerCraft;
 
 public class GuiComputer extends GuiScreen {
@@ -112,6 +118,7 @@ public class GuiComputer extends GuiScreen {
       int startY = (this.height - termHeight) / 2;
       int endX = startX + termWidth;
       int endY = startY + termHeight;
+      
       this.mc.renderEngine.bindTexture(term);
       drawTexturedModalRect(startX, startY, 0, 0, termWidth, termHeight); //bg
       this.mc.renderEngine.bindTexture(corners);
@@ -128,20 +135,39 @@ public class GuiComputer extends GuiScreen {
       this.mc.renderEngine.bindTexture(vfix);
       drawTexturedModalRect(startX - 12, startY, 0, 28, 12, termHeight); //left bar
       drawTexturedModalRect(endX, startY, 36, 28, 12, termHeight); //right bar
+       
+      if (terminal.getBitmapMode()) {
+  		int textureID = GL11.glGenTextures();
+  		this.mc.renderEngine.setupTexture(terminal.getScreenBuffer(), textureID);
+  		drawTexturedModalRectClamped(startX+2, startY+2, termWidth-4, termHeight-4);
+  	  } else {
+  		int textColour = (mod_ComputerCraft.terminal_textColour_r << 16) + (mod_ComputerCraft.terminal_textColour_g << 8) + (mod_ComputerCraft.terminal_textColour_b << 0);
+        int x = startX + 2;
+        int y = startY + 2;
+        for (int line = 0; line < th; line++) {
+          String text = tlines[line];
+          if (tblink && ty == line && mod_ComputerCraft.getCursorBlink() && 
+            tx >= 0 && tx < tw)
+          	mod_ComputerCraft.fixedWidthFontRenderer.drawString("_", x + mod_ComputerCraft.fixedWidthFontRenderer.FONT_WIDTH * tx, y, textColour); 
+          mod_ComputerCraft.fixedWidthFontRenderer.drawString(text, x, y, textColour);
+          y += mod_ComputerCraft.fixedWidthFontRenderer.FONT_HEIGHT;
+        } 
+  	  }
       
-      
-      int textColour = (mod_ComputerCraft.terminal_textColour_r << 16) + (mod_ComputerCraft.terminal_textColour_g << 8) + (mod_ComputerCraft.terminal_textColour_b << 0);
-      int x = startX + 2;
-      int y = startY + 2;
-      for (int line = 0; line < th; line++) {
-        String text = tlines[line];
-        if (tblink && ty == line && mod_ComputerCraft.getCursorBlink() && 
-          tx >= 0 && tx < tw)
-        	mod_ComputerCraft.fixedWidthFontRenderer.drawString("_", x + mod_ComputerCraft.fixedWidthFontRenderer.FONT_WIDTH * tx, y, textColour); 
-        mod_ComputerCraft.fixedWidthFontRenderer.drawString(text, x, y, textColour);
-        y += mod_ComputerCraft.fixedWidthFontRenderer.FONT_HEIGHT;
-      } 
     } 
     super.drawScreen(i, j, f);
+  }
+  
+  public void drawTexturedModalRectClamped(int i, int j, int i1, int j1)
+  {
+      float f = 0.00390625F;
+      float f1 = 0.00390625F;
+      Tessellator tessellator = Tessellator.instance;
+      tessellator.startDrawingQuads();
+      tessellator.addVertexWithUV(i + 0, j + j1, zLevel, 0, 1);
+      tessellator.addVertexWithUV(i + i1, j + j1, zLevel, 1, 1);
+      tessellator.addVertexWithUV(i + i1, j + 0, zLevel, 1, 0);
+      tessellator.addVertexWithUV(i + 0, j + 0, zLevel, 0, 0);
+      tessellator.draw();
   }
 }

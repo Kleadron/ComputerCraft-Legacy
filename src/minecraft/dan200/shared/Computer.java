@@ -43,6 +43,7 @@ import org.luaj.vm2.LuaThread;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.OneArgFunction;
+import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
@@ -174,6 +175,7 @@ public class Computer
             if (this.m_on) {
                 this.m_onDesired = false;
                 this.m_rebootDesired = false;
+                this.m_terminal.destroy();
                 this.stopComputer();
             }
             DriveInfo[] arrdriveInfo = this.m_drives;
@@ -674,12 +676,11 @@ public class Computer
         if (mod_ComputerCraft.enableAPI_luajava <= 0) {
             globals.set("luajava", LuaValue.NIL);
         }
+        
+        //term api
+        
         LuaTable term = new LuaTable();
         term.set("write", (LuaValue)new OneArgFunction(){
-
-            /*
-// WARNING - Removed try catching itself - possible behaviour change.
-             */
             @Override
             public LuaValue call(LuaValue _arg) {
                 Computer.this.tryAbort();
@@ -697,10 +698,6 @@ public class Computer
         }
         );
         term.set("scroll", (LuaValue)new OneArgFunction(){
-
-            /*
-// WARNING - Removed try catching itself - possible behaviour change.
-             */
             @Override
             public LuaValue call(LuaValue _arg) {
                 Computer.this.tryAbort();
@@ -714,10 +711,6 @@ public class Computer
         }
         );
         term.set("setCursorPos", (LuaValue)new TwoArgFunction(){
-
-            /*
-// WARNING - Removed try catching itself - possible behaviour change.
-             */
             @Override
             public LuaValue call(LuaValue _x, LuaValue _y) {
                 Computer.this.tryAbort();
@@ -732,10 +725,6 @@ public class Computer
         }
         );
         term.set("setCursorBlink", (LuaValue)new OneArgFunction(){
-
-            /*
-// WARNING - Removed try catching itself - possible behaviour change.
-             */
             @Override
             public LuaValue call(LuaValue _arg) {
                 Computer.this.tryAbort();
@@ -749,10 +738,6 @@ public class Computer
         }
         );
         term.set("getCursorPos", (LuaValue)new VarArgFunction(){
-
-            /*
-// WARNING - Removed try catching itself - possible behaviour change.
-             */
             @Override
             public Varargs invoke(Varargs _args) {
                 int y;
@@ -768,10 +753,6 @@ public class Computer
         }
         );
         term.set("getSize", (LuaValue)new VarArgFunction(){
-
-            /*
-// WARNING - Removed try catching itself - possible behaviour change.
-             */
             @Override
             public Varargs invoke(Varargs _args) {
                 int height;
@@ -787,10 +768,6 @@ public class Computer
         }
         );
         term.set("clear", (LuaValue)new ZeroArgFunction(){
-
-            /*
-// WARNING - Removed try catching itself - possible behaviour change.
-             */
             @Override
             public LuaValue call() {
                 Computer.this.tryAbort();
@@ -803,10 +780,6 @@ public class Computer
         }
         );
         term.set("clearLine", (LuaValue)new ZeroArgFunction(){
-
-            /*
-// WARNING - Removed try catching itself - possible behaviour change.
-             */
             @Override
             public LuaValue call() {
                 Computer.this.tryAbort();
@@ -819,6 +792,286 @@ public class Computer
         }
         );
         globals.set("term", (LuaValue)term);
+        
+        //graphics api
+        if (mod_ComputerCraft.enableGraphicsMode > 0) {
+        	LuaTable graphics = new LuaTable();
+            graphics.set("setMode", (LuaValue)new OneArgFunction(){
+                @Override
+                public LuaValue call(LuaValue _arg) {
+                    Computer.this.tryAbort();
+                    boolean b = _arg.checkboolean();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                        Computer.this.m_terminal.setBitmapMode(b);
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("getWidth", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    int num = 0;
+                    synchronized (terminal) {
+                    	num = Computer.this.m_terminal.getBitmapWidth();
+                    }
+                    return LuaValue.valueOf(num);
+                }
+            }
+            );
+            graphics.set("getHeight", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    int num = 0;
+                    synchronized (terminal) {
+                    	num = Computer.this.m_terminal.getBitmapHeight();
+                    }
+                    return LuaValue.valueOf(num);
+                }
+            }
+            );
+            graphics.set("pushCoord", new TwoArgFunction(){
+                @Override
+                public LuaValue call(LuaValue _x, LuaValue _y) {
+                    Computer.this.tryAbort();
+                    int x = _x.checkint();
+                    int y = _y.checkint();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.pushCoord(x, y);
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("drawLine", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.drawLine();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            /*
+            graphics.set("drawArc", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.drawArc();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("fillArc", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.fillArc();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("drawOval", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.drawOval();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("fillOval", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.fillOval();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("fillRect", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.fillRect();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("drawRect", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.drawRect();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("drawRoundRect", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.drawRoundRect();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("fillRoundRect", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.fillRoundRect();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("draw3DRectUnraised", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.draw3DRectUnraised();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("draw3DRectRaised", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.draw3DRectRaised();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("fill3DRectUnraised", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.fill3DRectUnraised();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("fill3DRectRaised", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.fill3DRectRaised();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );*/
+            graphics.set("clearRect", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.clearRect();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("copyArea", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.copyArea();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("setPixel", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.setPixel();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("drawString", new OneArgFunction(){
+                @Override
+                public LuaValue call(LuaValue _string) {
+                    Computer.this.tryAbort();
+                    String string = _string.checkjstring();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.drawString(string);
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            graphics.set("clearScreen", new ZeroArgFunction(){
+                @Override
+                public LuaValue call() {
+                    Computer.this.tryAbort();
+                    Terminal terminal = Computer.this.m_terminal;
+                    synchronized (terminal) {
+                    	Computer.this.m_terminal.clearBitmap();
+                    }
+                    return LuaValue.NIL;
+                }
+            }
+            );
+            globals.set("graphics", (LuaValue)graphics);
+        }
+        
+        //redstone api
+        
         LuaTable redstone = new LuaTable();
         redstone.set("getSides", (LuaValue)new ZeroArgFunction(){
 
@@ -899,6 +1152,9 @@ public class Computer
         );
         globals.set("redstone", (LuaValue)redstone);
         globals.set("rs", (LuaValue)redstone);
+        
+        //filesystem api
+        
         LuaTable fs = new LuaTable();
         fs.set("list", (LuaValue)new OneArgFunction(){
 
@@ -1336,6 +1592,9 @@ public class Computer
         }
         );
         globals.set("disk", (LuaValue)disk);
+        
+        //os api
+        
         LuaTable os = new LuaTable();
         os.set("queueEvent", (LuaValue)new VarArgFunction(){
 
@@ -1461,6 +1720,9 @@ public class Computer
         }
         );
         globals.set("os", (LuaValue)os);
+        
+        //http api
+        
         if (mod_ComputerCraft.enableAPI_http > 0) {
             LuaTable http = new LuaTable();
             http.set("request", (LuaValue)new OneArgFunction(){
@@ -1498,6 +1760,7 @@ public class Computer
         catch (LuaError e) {
             Terminal terminal = this.m_terminal;
             synchronized (terminal) {
+            	Computer.this.m_terminal.setBitmapMode(false);
             	this.m_terminal.write("Failed to " + mod_ComputerCraft.luaFolder + "/bios.lua");
                 this.m_terminal.setCursorPos(0, this.m_terminal.getCursorY() + 1);
                 this.m_terminal.write("Check you have installed ComputerCraft correctly.");
@@ -1526,6 +1789,7 @@ public class Computer
     			"rom/apis/parallel",
     			"rom/apis/rednet",
     			"rom/apis/textutils",
+    			"rom/apis/keys",
     			"rom/help/adventure",
     			"rom/help/alias",
     			"rom/help/apis",
@@ -1583,6 +1847,7 @@ public class Computer
     			"rom/help/type",
     			"rom/help/whatsnew",
     			"rom/help/worm",
+    			"rom/help/keys",
     			"rom/programs/adventure",
     			"rom/programs/alias",
     			"rom/programs/apis",
@@ -1675,6 +1940,8 @@ public class Computer
                     synchronized (var1_1) {
                         Terminal terminal = Computer.this.m_terminal;
                         synchronized (terminal) {
+                        	Computer.this.m_terminal.clearBitmap();
+                        	Computer.this.m_terminal.setBitmapMode(false);
                             Computer.this.m_terminal.clear();
                             Computer.this.m_terminal.setCursorPos(0, 0);
                             Computer.this.m_terminal.setCursorBlink(false);
@@ -1731,9 +1998,12 @@ public class Computer
                     System.out.println("really stopping");
                     Object object = Computer.this.m_terminal;
                     synchronized (object) {
+                    	Computer.this.m_terminal.clearBitmap();
+                    	Computer.this.m_terminal.setBitmapMode(false);
                         Computer.this.m_terminal.clear();
                         Computer.this.m_terminal.setCursorPos(0, 0);
                         Computer.this.m_terminal.setCursorBlink(false);
+                        
                     }
                     Computer.this.m_fileSystem = null;
                     object = Computer.this.m_timers;
@@ -1834,6 +2104,7 @@ public class Computer
                     Computer.this.m_globals = null;
                     Terminal terminal = Computer.this.m_terminal;
                     synchronized (terminal) {
+                    	Computer.this.m_terminal.setBitmapMode(false);
                         Computer.this.m_terminal.write(e.getMessage());
                         Computer.this.m_terminal.setCursorBlink(false);
                         Computer.this.m_terminal.setCursorPos(0, Computer.this.m_terminal.getCursorY() + 1);
