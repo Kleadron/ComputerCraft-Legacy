@@ -164,11 +164,11 @@ public class FixedWidthFontRenderer {
 	      return 0; 
 	    int i = 0;
 	    for (int j = 0; j < s.length(); j++) {
-	      if (/*s.charAt(j) == '§'*/false) {
-	        j++;
-	      } else {
+	      //if (/*s.charAt(j) == '§'*/false) {
+	        //j++;
+	      //} else {
 	        i += this.FONT_WIDTH;
-	      } 
+	      //} 
 	    } 
 	    return i;
 	  }

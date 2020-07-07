@@ -6,16 +6,11 @@
 
 package dan200.client;
 
-import java.awt.image.BufferedImage;
-import java.nio.ByteBuffer;
-
-import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import dan200.shared.Terminal;
 import dan200.shared.TileEntityComputer;
-import net.minecraft.src.GLAllocation;
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.Tessellator;
 import net.minecraft.src.mod_ComputerCraft;
@@ -155,10 +150,7 @@ public class GuiComputer extends GuiScreen {
     super.drawScreen(i, j, f);
   }
   
-  public void drawTexturedModalRectClamped(int i, int j, int i1, int j1)
-  {
-      float f = 0.00390625F;
-      float f1 = 0.00390625F;
+  public void drawTexturedModalRectClamped(int i, int j, int i1, int j1) {
       Tessellator tessellator = Tessellator.instance;
       tessellator.startDrawingQuads();
       tessellator.addVertexWithUV(i + 0, j + j1, zLevel, 0, 1);
