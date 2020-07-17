@@ -5,6 +5,7 @@ local bExit = false
 local sDir = (parentShell and parentShell.dir()) or ""
 local sPath = (parentShell and parentShell.path()) or ".:/rom/programs"
 local tAliases = (parentShell and parentShell.aliases()) or {}
+local tProgramStack = {}
 
 local shell = {}
 local tEnv = {
@@ -15,7 +16,10 @@ local tEnv = {
 function shell.run( _sCommand, ... )
 	local sPath = shell.resolveProgram( _sCommand )
 	if sPath ~= nil then
-   		return os.run( tEnv, sPath, ... )
+		tProgramStack[#tProgramStack + 1] = sPath
+   		local result = os.run( tEnv, sPath, ... )
+		tProgramStack[#tProgramStack] = nil
+		return result
    	else
     	print( "No such program" )
     	return false
@@ -79,7 +83,7 @@ function shell.resolveProgram( _sCommand )
 	return nil
 end
 
-function shell.programs()
+function shell.programs( _bIncludeHidden )
 	local tItems = {}
 	
 	-- Add programs from the path
@@ -88,7 +92,8 @@ function shell.programs()
 		if fs.isDir( sPath ) then
 			local tList = fs.list( sPath )
 			for n,sFile in pairs( tList ) do
-				if not fs.isDir( fs.combine( sPath, sFile ) ) then
+				if not fs.isDir( fs.combine( sPath, sFile ) ) and
+				   (_bIncludeHidden or string.sub( sFile, 1, 1 ) ~= ".") then
 					tItems[ sFile ] = true
 				end
 			end
@@ -102,6 +107,13 @@ function shell.programs()
 	end
 	table.sort( tItemList )
 	return tItemList
+end
+
+function shell.getRunningProgram()
+	if #tProgramStack > 0 then
+		return tProgramStack[#tProgramStack]
+	end
+	return nil
 end
 
 function shell.setAlias( _sCommand, _sProgram )
@@ -175,8 +187,8 @@ end
 
 -- If this is the toplevel shell, run the shutdown program
 if parentShell == nil then
-	local sShutdown = shell.resolveProgram( "shutdown" )
-	if sShutdown then
-		shell.run( sShutdown )
+	if shell.resolveProgram( "shutdown" ) then
+		shell.run( "shutdown" )
 	end
+	os.shutdown() -- just in case
 end
