@@ -11,7 +11,7 @@ Disk drives and disks work! Unfortunately because Item.addInformation doesn't ex
 
 Computer recipe changed from glass pane to glass block.
 
-Multiplayer does not work yet, but is being experimented with.
+Multiplayer does not work very well.
 
 Config is working!
 
